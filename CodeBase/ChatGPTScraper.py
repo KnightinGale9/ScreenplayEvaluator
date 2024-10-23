@@ -3,64 +3,52 @@ import pandas as pd
 import spacy
 import seaborn as sns
 import colorcet as cc
-
+import regex as re
 from CodeBase.Scraper import Scraper
 
 # nlp = spacy.load("en_core_web_trf") #slow but more accurate
 nlp = spacy.load("en_core_web_sm") #fast but less accurate
 
 
-class ScreenPyScrapper(Scraper):
+class ChatGPTScraper(Scraper):
     def __init__(self,file_path):
         try:
-            f = open(file_path)
-            self.data = json.load(f)
+            with open('example.txt', 'r') as file:
+                self.data = file.read()
             self.filename=file_path
-            f.close()
         except FileNotFoundError:
             print(file_path+ " was not found.")
     def screenplay_scrape(self):
         self.screenplay = {'sentence_index': [], 'type': [], 'location': [], 'text': []}
-        basic = {'ToD': None, 'shot type': None, 'location': None, 'terior': None, 'subj': None}
-        self.location_list = []
-        i = 0
+        location_list = []
         sent_idx = 0
-        for scene in self.data:
-            location = scene[0]["head_text"]
-            self.location_list.append(i)
-            # print(i,location)
-            for screen in scene:
-                if screen["head_type"] == 'heading':
-                    if screen['head_text']['subj'] == 'FADE IN':
-                        #                 print(screen)
-                        continue
-                    self.screenplay['type'].append(screen["head_type"].upper())
-                    # print(screen['head_text'])
-                    if screen['head_text'] != location and screen['head_text']['terior'] is not None:
-                        # print(i,location)
-                        location = screen['head_text']
-                        self.location_list['index'].append(i)
+        location = ""
+        story_combine = ""
+        screen = self.data.split("\n\n")
 
-                elif screen["head_type"] == 'speaker/title':
-                    self.screenplay['type'].append(screen["head_text"]['speaker/title'].split('(')[0].strip())
-                else:
-                    continue
-                process_text = str(screen['text'].strip())
-                split_text = process_text.split(".")
-                while "" in split_text:
-                    split_text.remove("")
-                sent_idx += len(split_text)
-                self.screenplay['sentence_index'].append(sent_idx)
-                self.screenplay['text'].append(process_text)
-                screenplayTXT = f"{location['terior']} {location['location']} "
-                if location['subj'] is not None:
-                    screenplayTXT += f" {location['subj']}"
-                if location['ToD'] is not None:
-                    screenplayTXT += f"- {location['ToD']}"
-                self.screenplay['location'].append(screenplayTXT)
+        for i, text in enumerate(screen):
+            # print(i,text)
+            if "EXT." in text or "INT." in text:
+                location = text
+                print(i, text)
+                location_list.append(i)
+                continue
+            character = text.split("\n")
+            if character[0].isupper():
+                self.screenplay["type"].append(character[0])
+                temp = ""
+                for tt in character[1:]:
+                    temp += tt
+                self.screenplay["text"].append(temp)
 
-                # screenplay['text'].append(nlp(screen['text']))
-                i += 1
+            else:
+                self.screenplay["type"].append("HEADING")
+                self.screenplay["text"].append(text)
+
+            self.screenplay["location"].append(location)
+            sent_idx += self.count_sentences(text)
+            self.screenplay["sentence_index"].append(sent_idx)
+
     def dataframe_creation(self,character_removal=[]):
 
         self.fulldf = pd.DataFrame(self.screenplay)
@@ -122,19 +110,11 @@ class ScreenPyScrapper(Scraper):
         self.locationcocurence.set_index('location', inplace=True)
         self.locationcocurence.drop(columns=['sentence_index', 'type', 'text', 'character'], inplace=True)
 
-    # def get_filename(self):
-    #     return self.filename
-    # def get_fulldf(self):
-    #     return self.fulldf
-    # def get_characterdict(self):
-    #     return self.characterdict
-    # def get_headingdf(self):
-    #     return self.headingdf
-    # def get_locationdf(self):
-    #     return self.locationdf
-    # def get_dialoguedf(self):
-    #     return self.dialoguedf
-    # def get_locationcocurence(self):
-    #     return self.locationcocurence
 
+    def count_sentences(self,text):
+        # Use regular expression to find sentences
+        sentences = re.split(r'[.!?]+', text)
+
+        # Filter out empty strings and count
+        return len([s for s in sentences if s.strip()])
 

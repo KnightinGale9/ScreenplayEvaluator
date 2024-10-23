@@ -1,12 +1,14 @@
 import matplotlib.pyplot as plt
 import spacy
+
+from CodeBase.Evaluator import Evaluator
+
 # nlp = spacy.load("en_core_web_trf") #slow but more accurate
 nlp = spacy.load("en_core_web_sm") #fast but less accurate
-class PartOfSpeech:
+class PartOfSpeech(Evaluator):
 
-    def __init__(self, filename, fulldf):
-        self.filename = filename
-        self.fulldf=fulldf
+    def __init__(self, scraper):
+        super().__init__(scraper)
         self.pos_full={  "ADJ": "adjective",
                     "ADP": "adposition",
                     "ADV": "adverb",
@@ -97,7 +99,7 @@ class PartOfSpeech:
         }
         self.tag_count = {}
 
-        for idx, row in self.fulldf.iterrows():
+        for idx, row in self.scraper.get_fulldf().iterrows():
             pos = nlp(row['text'])
             for token in pos:
                 # print(token.text, token.pos_, token.tag_)
@@ -176,7 +178,7 @@ class PartOfSpeech:
         fig, ax = plt.subplots()
         plt.title("Verb")
         ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(self.filename.replace(".json", "-verb-piechart.png"))
+        plt.savefig(self.scraper.get_filename().replace(".json", "-verb-piechart.png"))
 
     def adverb_pie_chart(self):
         keys_to_keep = ["RB", "RBR", "RBS", "RP", "WRB"]
@@ -191,4 +193,4 @@ class PartOfSpeech:
         fig, ax = plt.subplots()
         plt.title("Adverb")
         ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(self.filename.replace(".json", "-adverb-piechart.png"))
+        plt.savefig(self.scraper.get_filename().replace(".json", "-adverb-piechart.png"))

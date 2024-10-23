@@ -102,7 +102,8 @@ def main(inputf):
     sentences = nltk.sent_tokenize(input)
     print(len(sentences))
     for s in sentences:
-        if not s.strip(): continue
+        if not s.strip():
+            continue
         try:
             t = list(parser.raw_parse(s))[0]
         except Exception:

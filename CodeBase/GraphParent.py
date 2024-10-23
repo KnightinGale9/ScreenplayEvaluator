@@ -2,50 +2,49 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.cluster.hierarchy import linkage, leaves_list
 
-class GraphParent:
-    def __init__(self, filename,characterdict, dialoguedf, headingdf, locationdf,locationcocurence):
-        self.filename=filename
-        self.characterdict = characterdict
-        self.dialoguedf = dialoguedf
-        self.headingdf = headingdf
-        self.locationdf = locationdf
-        self.locationcocurence=locationcocurence
+from CodeBase.Evaluator import Evaluator
 
-    def alt_bands(self,ax=None, x_axis=True):
+
+class GraphParent(Evaluator):
+    def __init__(self, scraper):
+        super().__init__(scraper)
+
+    def x_axis_alt_bands(self,ax=None):
         ax = ax or plt.gca()
-        if x_axis is True:
-            x_left, x_right = ax.get_xlim()
-            locs = ax.get_xticks()
-            for loc1, loc2 in zip(locs[::2], np.concatenate((locs, [x_right]))[1::2]):
-                ax.axvspan(loc1, loc2, facecolor='black', alpha=0.2)
-            ax.set_xlim(x_left, x_right)
-        else:
-            y_bottom, y_top = ax.get_ylim()
-            locs = ax.get_yticks()
-            for loc1, loc2 in zip(locs[::2], np.concatenate((locs, [y_top]))[1::2]):
-                ax.axhspan(loc1, loc2, facecolor='black', alpha=0.2)
-            ax.set_ylim(y_bottom, y_top)
+        x_left, x_right = ax.get_xlim()
+        locs = ax.get_xticks()
+        for loc1, loc2 in zip(locs[::2], np.concatenate((locs, [x_right]))[1::2]):
+            ax.axvspan(loc1, loc2, facecolor='black', alpha=0.2)
+        ax.set_xlim(x_left, x_right)
+
+    def y_axis_alt_bands(self, ax=None):
+        ax = ax or plt.gca()
+        y_bottom, y_top = ax.get_ylim()
+        locs = ax.get_yticks()
+        for loc1, loc2 in zip(locs[::2], np.concatenate((locs, [y_top]))[1::2]):
+            ax.axhspan(loc1, loc2, facecolor='black', alpha=0.2)
+        ax.set_ylim(y_bottom, y_top)
 
     def heading_only_lines(self):
         self.speaking = {}
 
-        for character in self.characterdict:
-            self.speaking[character] = self.dialoguedf.loc[self.dialoguedf['type'] == character]['sentence_index']
+        for character in self.scraper.get_characterdict():
+            self.speaking[character] = self.scraper.get_dialoguedf().loc[self.scraper.get_dialoguedf()['type'] == character]['sentence_index']
 
     def character_dialogue_lines(self):
-        self.peaking = {}
+        self.speaking = {}
 
-        for character in self.characterdict:
-            self.speaking[character] = self.headingdf[self.headingdf['characters'].apply(lambda x: character in x)][
+        for character in self.scraper.get_characterdict():
+            self.speaking[character] = self.scraper.get_headingdf()[self.scraper.get_headingdf()['characters'].apply(lambda x: character in x)][
                 'sentence_index']
 
     def combined_lines(self):
         self.speaking = {}
 
-        for character in self.characterdict:
-            dia = set(self.dialoguedf.loc[self.dialoguedf['type'] == character]['sentence_index'])
+        for character in self.scraper.get_characterdict():
+            dia = set(self.scraper.get_dialoguedf().loc[self.scraper.get_dialoguedf()['type'] == character]['sentence_index'])
             setting = set(
-                self.headingdf[self.headingdf['characters'].apply(lambda x: character in x)]['sentence_index'])
+                self.scraper.get_headingdf()[self.scraper.get_headingdf()['characters'].apply(lambda x: character in x)]['sentence_index'])
             combine = list(dia.union(setting))
             combine.sort()
             self.speaking[character] = combine
@@ -68,27 +67,27 @@ class GraphParent:
         return sorted_character
 
     def sorted_character_matrix(self):
-        co_occurrence = np.dot(self.locationcocurence.T, self.locationcocurence)
+        co_occurrence = np.dot(self.scraper.get_locationcocurence().T, self.scraper.get_locationcocurence())
         linkage_matrix = linkage(co_occurrence, method='single')
         dendrogram_order = leaves_list(linkage_matrix)
 
         # Reorder characters
-        characters = self.locationcocurence.columns
+        characters = self.scraper.get_locationcocurence().columns
         reordered_characters = characters[dendrogram_order]
 
         # Reorder data for plotting
-        sorted_character = self.locationcocurence[reordered_characters]
+        sorted_character = self.scraper.get_locationcocurence()[reordered_characters]
         return sorted_character
 
     def sorted_character_cocurancesum(self):
-        co_occurrence = np.dot(self.locationcocurence.T, self.locationcocurence)
+        co_occurrence = np.dot(self.scraper.get_locationcocurence().T, self.scraper.get_locationcocurence())
         linkage_matrix = linkage(co_occurrence, method='single')
         dendrogram_order = leaves_list(linkage_matrix)
 
         # Reorder characters
-        characters = self.locationcocurence.columns
+        characters = self.scraper.get_locationcocurence().columns
         reordered_characters = characters[dendrogram_order]
 
         # Reorder data for plotting
-        sorted_character = self.locationcocurence[reordered_characters]
+        sorted_character = self.scraper.get_locationcocurence()[reordered_characters]
         return sorted_character

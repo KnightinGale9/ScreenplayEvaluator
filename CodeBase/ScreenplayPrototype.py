@@ -18,22 +18,22 @@ from CodeBase.GraphParent import GraphParent
 from CodeBase.IncreasingGraph import IncreasingGraph
 from CodeBase.PrescenceGraph import PrescenceGraph
 from CodeBase.PartOfSpeech import PartOfSpeech
-
-
+from CodeBase.SentenceComplexity import SentenceComplexity
+from CodeBase.ChatGPTScraper import ChatGPTScraper
 # nlp = spacy.load("en_core_web_trf") #slow but more accurate
 nlp = spacy.load("en_core_web_sm") #fast but less accurate
 
 
-screenplay_main=ScreenPyScrapper("indianajonesandtheraidersofthelostark.json")
+screenplay_main=ChatGPTScraper("example.txt")
 screenplay_main.screenplay_scrape()
 screenplay_main.dataframe_creation(character_removal={'PERU','TOP SECRET','DO NOT OPEN!'})
 
-increasinggraph = IncreasingGraph(screenplay_main.filename,screenplay_main.characterdict, screenplay_main.dialoguedf,
-                                  screenplay_main.headingdf, screenplay_main.locationdf,screenplay_main.locationcocurence)
-prescencegraph = PrescenceGraph(screenplay_main.filename,screenplay_main.characterdict, screenplay_main.dialoguedf,
-                                  screenplay_main.headingdf, screenplay_main.locationdf,screenplay_main.locationcocurence)
+increasinggraph = IncreasingGraph(screenplay_main)
+prescencegraph = PrescenceGraph(screenplay_main)
 
-partofspeech = PartOfSpeech(screenplay_main.filename,screenplay_main.fulldf)
+# partofspeech = PartOfSpeech(screenplay_main.filename,screenplay_main.fulldf)
+
+# sentencecomplexity = SentenceComplexity(screenplay_main.fulldf)
 
 increasinggraph.combined_lines()
 increasinggraph.increasing_graph()
@@ -42,6 +42,6 @@ prescencegraph.set_sorted_character("matrix")
 prescencegraph.prescence_graph()
 
 
-partofspeech.pos_aggregate()
-partofspeech.pos_pie_chart()
-partofspeech.key_pos_pie_chart()
+# partofspeech.pos_aggregate()
+# partofspeech.pos_pie_chart()
+# partofspeech.key_pos_pie_chart()

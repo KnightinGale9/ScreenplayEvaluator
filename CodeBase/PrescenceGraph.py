@@ -18,7 +18,7 @@ class PrescenceGraph(GraphParent):
         elif type == "cocurancesum":
             self.sorted_character = self.sorted_character_cocurancesum()
         else:
-            self.sorted_character = self.characterdict
+            self.sorted_character = self.scraper.get_characterdict()
 
     def prescence_graph(self):
         # Sample data for events
@@ -28,7 +28,7 @@ class PrescenceGraph(GraphParent):
         for character in self.sorted_character:
             char.append(character)
             events.append(self.speaking[character])
-            color.append(self.characterdict[character])
+            color.append(self.scraper.get_characterdict()[character])
 
         # Create figure and axis
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -38,8 +38,8 @@ class PrescenceGraph(GraphParent):
                      colors=color)
 
         ax.set_xticks(range(0, len(self.speaking)))
-        ax.set_yticks((np.array(self.locationdf['sentence_index'])))
-        self.alt_bands(ax=ax,x_axis=False)
+        ax.set_yticks((np.array(self.scraper.get_locationdf()['sentence_index'])))
+        self.y_axis_alt_bands(ax=ax)
         ax.set_xticklabels(char)
         plt.margins(0)
         plt.yticks([])
@@ -52,5 +52,6 @@ class PrescenceGraph(GraphParent):
         # # Adding legend manually
         ax.legend(loc='upper right')
         plt.xticks(rotation=90)
-        plt.savefig(self.filename.replace(".json", "-prescenceGraph.png"))
+        plt.show()
+        plt.savefig(self.scraper.get_filename().replace(".json", "-prescenceGraph.png"))
         plt.close()
