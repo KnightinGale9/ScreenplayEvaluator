@@ -91,7 +91,8 @@ class SentenceComplexity(GraphParent):
     def __init__(self,scraper):
         super().__init__(scraper)
         self.sentences=[]
-        for data in self.get_scraper().get_fulldf():
+        dataframe = self.get_scraper().get_fulldf()
+        for data in dataframe:
             #maybe remove the (description lines)
             sent = nltk.sent_tokenize(data)
             self.sentences.extend(sent)

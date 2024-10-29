@@ -21,3 +21,5 @@ class Scraper(object):
         return self.dialoguedf
     def get_locationcocurence(self):
         return self.locationcocurence
+    def get_locationlist(self):
+        return self.locationlist
