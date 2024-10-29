@@ -1,7 +1,7 @@
 from CodeBase.Scraper import Scraper
 
 class Evaluator():
-    def __init(self, scraper=None):
+    def __init__(self, scraper=None):
         if isinstance(scraper, Scraper):
             self.scraper = scraper
         else:

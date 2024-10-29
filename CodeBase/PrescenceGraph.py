@@ -52,6 +52,6 @@ class PrescenceGraph(GraphParent):
         # # Adding legend manually
         ax.legend(loc='upper right')
         plt.xticks(rotation=90)
-        plt.show()
+        # plt.show()
         plt.savefig(self.scraper.get_filename().replace(".json", "-prescenceGraph.png"))
         plt.close()

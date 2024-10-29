@@ -1,8 +1,8 @@
 class Scraper(object):
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(Scraper, cls).__new__(cls)
-        return cls.instance
+    # def __new__(cls):
+    #     if not hasattr(cls, 'instance'):
+    #         cls.instance = super(Scraper, cls).__new__(cls)
+    #     return cls.instance
     def screenplay_scrape(self):
         pass
     def dataframe_creation(self,character_removal=[]):

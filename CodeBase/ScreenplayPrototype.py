@@ -24,9 +24,10 @@ from CodeBase.ChatGPTScraper import ChatGPTScraper
 nlp = spacy.load("en_core_web_sm") #fast but less accurate
 
 
-screenplay_main=ChatGPTScraper("example.txt")
+# screenplay_main=ChatGPTScraper("example.txt")
+screenplay_main=ScreenPyScrapper("indianajonesandtheraidersofthelostark.json")
 screenplay_main.screenplay_scrape()
-screenplay_main.dataframe_creation(character_removal={'PERU','TOP SECRET','DO NOT OPEN!'})
+screenplay_main.dataframe_creation()
 
 increasinggraph = IncreasingGraph(screenplay_main)
 prescencegraph = PrescenceGraph(screenplay_main)

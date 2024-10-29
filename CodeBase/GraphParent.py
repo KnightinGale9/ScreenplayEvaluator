@@ -7,7 +7,7 @@ from CodeBase.Evaluator import Evaluator
 
 class GraphParent(Evaluator):
     def __init__(self, scraper):
-        super().__init__(scraper)
+        super().__init__(scraper=scraper)
 
     def x_axis_alt_bands(self,ax=None):
         ax = ax or plt.gca()
