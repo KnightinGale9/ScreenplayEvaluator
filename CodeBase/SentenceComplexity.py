@@ -91,8 +91,8 @@ class SentenceComplexity(GraphParent):
     def __init__(self,scraper):
         super().__init__(scraper)
         self.sentences=[]
-        dataframe = self.get_scraper().get_fulldf()
-        for data in dataframe:
+        dataframe = self.scraper.get_fulldf()
+        for data in dataframe['text']:
             #maybe remove the (description lines)
             sent = nltk.sent_tokenize(data)
             self.sentences.extend(sent)
@@ -108,11 +108,11 @@ class SentenceComplexity(GraphParent):
 
         parser = CoreNLPParser(url='http://localhost:9000')
         for s in self.sentences:
-            if not s.strip(): continue
+            # if not s.strip(): continue
             try:
                 t = list(parser.raw_parse(s))[0]
-            except Exception:
-                print("skipping", s)
+            except Exception as ex:
+                print(type(ex),"skipping", s)
                 continue
             words = self.calc_words(t)
             words_tot += words
@@ -137,12 +137,15 @@ class SentenceComplexity(GraphParent):
         print("Total\tsents=%d\twords=%f\tyngve=%f\tfrazier=%f\tnodes=%f" % (sents, words_avg, yngve_avg, frazier_avg, nodes_avg))
 
         f = open("test-complexity.json", "w")
-        data = {"yngves": yngves, "fraziers": fraziers, "words": words}
+        data = {"yngves": yngves, "fraziers": fraziers, "words": wordss}
         json.dump({"yngves": yngves, "fraziers": fraziers, "words": words, "averages": {"yngve": yngve_avg, "frazier": frazier_avg, "words": words_avg}}, f)
         f.close()
         self.sentence_data_df =pd.DataFrame()
         for i in data:
             self.sentence_data_df[i]=data[i]
+        self.sentence_data_df["yngves_mean"]=self.sentence_data_df['yngves']/self.sentence_data_df['words']
+        self.sentence_data_df["fraziers_mean"] = self.sentence_data_df['fraziers'] / self.sentence_data_df['words']
+        print(self.sentence_data_df)
 
     def sentence_length_graph(self):
         sentence_length = {}
@@ -157,8 +160,8 @@ class SentenceComplexity(GraphParent):
         sorted_sentence.sort()
         keys, values = zip(*sorted_sentence)
         plt.bar(keys, values)
-        plt.show()
-
+        plt.savefig(self.scraper.get_filename().replace(".json", "-sentence_length_graph.png"))
+        plt.close
     def sentence_length_indexing(self):
         # fig,ax = plt.subplot()
         fig, ax = plt.subplots(figsize=(20, 10))
@@ -174,8 +177,8 @@ class SentenceComplexity(GraphParent):
         plt.xlim([0, self.scraper.get_locationdf()['sentence_index'].iloc[-1]])
         plt.xlabel([])
         self.x_axis_alt_bands()
-        plt.show()
-
+        plt.savefig(self.scraper.get_filename().replace(".json", "-sentence_length_indexing.png"))
+        plt.close
     def yngves_and_frazier_mean(self):
         # fig,ax = plt.subplot()
         fig, ax = plt.subplots(figsize=(20, 10))
@@ -189,4 +192,5 @@ class SentenceComplexity(GraphParent):
 
         plt.xlim([0, self.scraper.get_locationdf()['sentence_index'].iloc[-1]])
         self.x_axis_alt_bands()
-        plt.show()
+        plt.savefig(self.scraper.get_filename().replace(".json", "-yngves_and_frazier_mean.png"))
+        plt.close

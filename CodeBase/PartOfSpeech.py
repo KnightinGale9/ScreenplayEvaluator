@@ -112,6 +112,7 @@ class PartOfSpeech(Evaluator):
                 self.tag_count[token.tag_] += 1
         for i in ['SPACE', 'SYM', 'X', 'PUNCT', 'NUM']:
             self.pos_count.pop(i)
+        print(self.tag_count)
     def pos_pie_chart(self):
         labels = []
         sizes = []
@@ -120,7 +121,9 @@ class PartOfSpeech(Evaluator):
             sizes.append(self.pos_count[temp])
         fig, ax = plt.subplots()
         ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(self.filename.replace(".json", "-pos-piechart.png"))
+        plt.savefig(self.scraper.get_filename().replace(".json", "-pos-piechart.png"))
+        plt.close()
+
     def key_pos_pie_chart(self):
         keys_to_keep = ["NOUN", "ADV", "ADJ", "VERB"]
         subset_dict = {k: self.pos_count[k] for k in keys_to_keep if k in self.pos_count}
@@ -134,7 +137,8 @@ class PartOfSpeech(Evaluator):
         fig, ax = plt.subplots()
         # plt.title("Noun")
         ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(self.filename.replace(".json", "-curated-pos-piechart.png"))
+        plt.savefig(self.scraper.get_filename().replace(".json", "-curated-pos-piechart.png"))
+        plt.close()
 
     def noun_pie_chart(self):
         keys_to_keep = ["NN", "NNP", "NNPS", "NNS"]
@@ -143,13 +147,14 @@ class PartOfSpeech(Evaluator):
         labels = []
         sizes = []
         for temp in subset_dict.keys():
-            labels.append(self.tag_count.pos_full[temp])
+            labels.append(self.tag_count[temp])
             sizes.append(self.tag_count[temp])
 
         fig, ax = plt.subplots()
         plt.title("Noun")
         ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(self.filename.replace(".json", "-noun-piechart.png"))
+        plt.savefig(self.scraper.get_filename().replace(".json", "-noun-piechart.png"))
+        plt.close()
 
     def adj_pie_chart(self):
         keys_to_keep = ["JJ", "JJR", "JJS"]
@@ -164,7 +169,9 @@ class PartOfSpeech(Evaluator):
         fig, ax = plt.subplots()
         plt.title("adjective")
         ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(self.filename.replace(".json", "-adj-piechart.png"))
+        plt.savefig(self.scraper.get_filename().replace(".json", "-adj-piechart.png"))
+        plt.close()
+
     def verb_pie_chart(self):
         keys_to_keep = ["MD", "VB", "VBD", "VBG", "VBN", "VBP", "VBZ"]
         subset_dict = {k: self.tag_count[k] for k in keys_to_keep if k in self.tag_count}
@@ -179,6 +186,8 @@ class PartOfSpeech(Evaluator):
         plt.title("Verb")
         ax.pie(sizes, labels=labels, autopct='%1.1f%%')
         plt.savefig(self.scraper.get_filename().replace(".json", "-verb-piechart.png"))
+        plt.close()
+
 
     def adverb_pie_chart(self):
         keys_to_keep = ["RB", "RBR", "RBS", "RP", "WRB"]
@@ -194,3 +203,4 @@ class PartOfSpeech(Evaluator):
         plt.title("Adverb")
         ax.pie(sizes, labels=labels, autopct='%1.1f%%')
         plt.savefig(self.scraper.get_filename().replace(".json", "-adverb-piechart.png"))
+        plt.close()

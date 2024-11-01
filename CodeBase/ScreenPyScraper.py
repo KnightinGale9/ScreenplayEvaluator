@@ -78,7 +78,7 @@ class ScreenPyScrapper(Scraper):
                 for idx, row in self.fulldf.loc[self.fulldf['type'] == removal].iterrows():
                     self.fulldf.loc[idx, "text"] = str(row['type'] + " " + row['text'])
                     self.fulldf.loc[idx, 'type'] = "HEADING"
-
+        print(self.fulldf)
         self.dialoguedf = self.fulldf.loc[self.fulldf['type'] != "HEADING"]
 
         self.headingdf = self.fulldf.loc[self.fulldf['type'] == "HEADING"]
@@ -103,8 +103,8 @@ class ScreenPyScrapper(Scraper):
         locationchar = []
         characterprescene = {key: [] for key in self.characterdict.keys()}
         for loca in self.locationdf['location']:
-            intermidiate = set(self.fulldf.loc[self.fulldf['location'] == loca]['type']).difference(
-                character_removal.union(set(["HEADING"])))
+            intermidiate=set(
+                self.fulldf.loc[self.fulldf['location'] == loca]['type'])
             intermidiate.union(*self.headingdf.loc[self.headingdf['location'] == loca]['characters'])
             locationchar.append(intermidiate)
             for character in characterprescene:
@@ -121,20 +121,5 @@ class ScreenPyScrapper(Scraper):
         self.locationcocurence = self.locationdf.copy()
         self.locationcocurence.set_index('location', inplace=True)
         self.locationcocurence.drop(columns=['sentence_index', 'type', 'text', 'character'], inplace=True)
-
-    # def get_filename(self):
-    #     return self.filename
-    # def get_fulldf(self):
-    #     return self.fulldf
-    # def get_characterdict(self):
-    #     return self.characterdict
-    # def get_headingdf(self):
-    #     return self.headingdf
-    # def get_locationdf(self):
-    #     return self.locationdf
-    # def get_dialoguedf(self):
-    #     return self.dialoguedf
-    # def get_locationcocurence(self):
-    #     return self.locationcocurence
 
 

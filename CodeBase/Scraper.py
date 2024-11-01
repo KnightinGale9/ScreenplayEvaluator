@@ -22,4 +22,4 @@ class Scraper(object):
     def get_locationcocurence(self):
         return self.locationcocurence
     def get_locationlist(self):
-        return self.locationlist
+        return self.location_list
