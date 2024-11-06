@@ -1,10 +1,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-import spacy
 from CodeBase.GraphParent import GraphParent
-# nlp = spacy.load("en_core_web_trf") #slow but more accurate
-nlp = spacy.load("en_core_web_sm") #fast but less accurate
 class IncreasingGraph(GraphParent):
     def increasing_graph(self):
         fig, ax = plt.subplots(figsize=(10, 5))
@@ -21,5 +18,7 @@ class IncreasingGraph(GraphParent):
 
         self.x_axis_alt_bands(ax=ax)
         plt.xticks([])
-        plt.savefig(self.scraper.get_filename().replace(".json", "-increasingGraph.png"))
+        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-increasingGraph.png")}')
         plt.close()
+    def get_json_data(self):
+        return self.speaking

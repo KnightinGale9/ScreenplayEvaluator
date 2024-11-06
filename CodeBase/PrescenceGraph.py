@@ -1,11 +1,6 @@
 from CodeBase.GraphParent import GraphParent
 import matplotlib.pyplot as plt
 import numpy as np
-import spacy
-
-# nlp = spacy.load("en_core_web_trf") #slow but more accurate
-nlp = spacy.load("en_core_web_sm")  # fast but less accurate
-
 
 class PrescenceGraph(GraphParent):
     def set_sorted_character(self, type):
@@ -53,5 +48,5 @@ class PrescenceGraph(GraphParent):
         ax.legend(loc='upper right')
         plt.xticks(rotation=90)
         # plt.show()
-        plt.savefig(self.scraper.get_filename().replace(".json", "-prescenceGraph.png"))
+        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-prescenceGraph.png")}')
         plt.close()

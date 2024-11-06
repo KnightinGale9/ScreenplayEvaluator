@@ -3,26 +3,16 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 
 from CodeBase.Evaluator import Evaluator
-from CodeBase.GraphParent import GraphParent
 
 
 class HeapsLaw(Evaluator):
-
-    def preprocess_text(self,text):
-        """
-        Preprocesses the text by converting to lowercase, removing punctuation, and splitting into words.
-        """
-        text = text.lower()
-        text = re.sub(r'[^\w\s]', '', text)  # Remove punctuation
-        words = text.split()  # Split into words
-        return words
 
     def heaps_law(self,k=10, beta=0.5):
         vocabulary = defaultdict(int)
         self.vocab_growth = []
 
         for i,row in self.scraper.get_fulldf().iterrows():
-            print(row['text'])
+            # print(row['text'])
             for tt in row['text']:
                 vocabulary[tt] += 1
                 # Calculate expected vocab size according to Heap's law
@@ -48,6 +38,8 @@ class HeapsLaw(Evaluator):
         plt.title('Heap\'s Law: Vocabulary Growth')
         plt.yticks([0,50,100,150,200,250,300])
         plt.legend()
-        plt.savefig(self.scraper.get_filename().replace(".json", "-HeapsLaw.png"))
+        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-HeapsLaw.png")}')
         plt.close()
 
+    def get_json_data(self):
+        return self.vocab_growth

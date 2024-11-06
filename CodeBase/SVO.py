@@ -2,6 +2,8 @@
 import sys
 import json
 
+from CodeBase.Evaluator import Evaluator
+
 try:
     from nltk.tree import ParentedTree,Tree
     from nltk.draw.tree import TreeWidget
@@ -20,94 +22,97 @@ except ImportError:
 parser = CoreNLPParser(url='http://localhost:9000')
 
 
-
-def find_subject(t):
-    for s in t.subtrees(lambda t: t.label() == 'NP'):
-        for n in s.subtrees(lambda n: n.label().startswith('NN')):
-            return (n[0], find_attrs(n))
-
-
-def find_predicate(t):
-    v = None
-
-    for s in t.subtrees(lambda t: t.label() == 'VP'):
-        for n in s.subtrees(lambda n: n.label().startswith('VB')):
-            v = n
-        return (v[0], find_attrs(v))
+class SVO(Evaluator):
+    def find_subject(self,t):
+        for s in t.subtrees(lambda t: t.label() == 'NP'):
+            for n in s.subtrees(lambda n: n.label().startswith('NN')):
+                return (n[0], self.find_attrs(n))
 
 
-def find_object(t):
-    for s in t.subtrees(lambda t: t.label() == 'VP'):
-        for n in s.subtrees(lambda n: n.label() in ['NP', 'PP', 'ADJP']):
-            if n.label() in ['NP', 'PP']:
-                for c in n.subtrees(lambda c: c.label().startswith('NN')):
-                    return (c[0], find_attrs(c))
-            else:
-                for c in n.subtrees(lambda c: c.label().startswith('JJ')):
-                    return (c[0], find_attrs(c))
+    def find_predicate(self,t):
+        v = None
+
+        for s in t.subtrees(lambda t: t.label() == 'VP'):
+            for n in s.subtrees(lambda n: n.label().startswith('VB')):
+                v = n
+            return (v[0], self.find_attrs(v))
 
 
-def find_attrs(node):
-    attrs = []
-    p = node.parent()
-
-    # Search siblings
-    if node.label().startswith('JJ'):
-        for s in p:
-            if s.label() == 'RB':
-                attrs.append(s[0])
-
-    elif node.label().startswith('NN'):
-        for s in p:
-            if s.label() in ['DT', 'PRP$', 'POS', 'JJ', 'CD', 'ADJP', 'QP', 'NP']:
-                attrs.append(' '.join(s.flatten()))
-
-    elif node.label().startswith('VB'):
-        for s in p:
-            if s.label() == 'ADVP':
-                attrs.append(' '.join(s.flatten()))
-
-    # Search uncles
-    if node.label().startswith('JJ') or node.label().startswith('NN'):
-        for s in p.parent():
-            if s != p and s.label() == 'PP':
-                attrs.append(' '.join(s.flatten()))
-
-    elif node.label().startswith('VB'):
-        for s in p.parent():
-            if s != p and s.label().startswith('VB'):
-                attrs.append(s[0])
-
-    return attrs
+    def find_object(self,t):
+        for s in t.subtrees(lambda t: t.label() == 'VP'):
+            for n in s.subtrees(lambda n: n.label() in ['NP', 'PP', 'ADJP']):
+                if n.label() in ['NP', 'PP']:
+                    for c in n.subtrees(lambda c: c.label().startswith('NN')):
+                        return (c[0], self.find_attrs(c))
+                else:
+                    for c in n.subtrees(lambda c: c.label().startswith('JJ')):
+                        return (c[0], self.find_attrs(c))
 
 
-def main(sentence):
+    def find_attrs(self,node):
+        attrs = []
+        p = node.parent()
 
-    # print(find_subject(sentence))
-    # print(find_predicate(sentence))
-    # print(find_object(sentence))
-    return [find_subject(sentence),find_predicate(sentence),find_object(sentence)]
+        # Search siblings
+        if node.label().startswith('JJ'):
+            for s in p:
+                if s.label() == 'RB':
+                    attrs.append(s[0])
 
-import sys
+        elif node.label().startswith('NN'):
+            for s in p:
+                if s.label() in ['DT', 'PRP$', 'POS', 'JJ', 'CD', 'ADJP', 'QP', 'NP']:
+                    attrs.append(' '.join(s.flatten()))
 
-f = open("../StanfordPY/INDY.txt", encoding="utf-8")
-input = f.read()
-f.close()
-output=[]
-sentences = nltk.sent_tokenize(input)
-print(len(sentences))
-for s in sentences:
-    if not s.strip():
-        continue
-    try:
-        t = list(parser.raw_parse(s))[0]
-        print(type(t), t)
-        ptree = ParentedTree.convert(t)
-        output.append([s,main(ptree)])
-    except Exception:
-        print("skipping", s)
-        continue
-# Parse the example sentence
+        elif node.label().startswith('VB'):
+            for s in p:
+                if s.label() == 'ADVP':
+                    attrs.append(' '.join(s.flatten()))
 
-with open('data.json', 'w') as f:
-    json.dump(output, f)
+        # Search uncles
+        if node.label().startswith('JJ') or node.label().startswith('NN'):
+            for s in p.parent():
+                if s != p and s.label() == 'PP':
+                    attrs.append(' '.join(s.flatten()))
+
+        elif node.label().startswith('VB'):
+            for s in p.parent():
+                if s != p and s.label().startswith('VB'):
+                    attrs.append(s[0])
+
+        return attrs
+
+    def __init__(self,scraper):
+        super().__init__(scraper)
+        self.sentences=[]
+        dataframe = self.scraper.get_fulldf()
+        for data in dataframe['text']:
+            #maybe remove the (description lines)
+            sent = nltk.sent_tokenize(data)
+            self.sentences.extend(sent)
+    def calculation(self,sentence):
+
+        # print(find_subject(sentence))
+        # print(find_predicate(sentence))
+        # print(find_object(sentence))
+        return [self.find_subject(sentence), self.find_predicate(sentence), self.find_object(sentence)]
+
+    import sys
+    def create_data(self):
+        output=[]
+        # print(len(sentences))
+        for s in self.sentences:
+            if not s.strip():
+                continue
+            try:
+                t = list(parser.raw_parse(s))[0]
+                # print(type(t), t)
+                ptree = ParentedTree.convert(t)
+                output.append([s,self.calculation(ptree)])
+            except Exception:
+                print("skipping", s)
+                continue
+        # Parse the example sentence
+
+        with open('../output/SVO.json', 'w') as f:
+            json.dump(output, f)

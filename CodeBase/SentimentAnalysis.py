@@ -53,4 +53,6 @@ class SentimentAnalysis(Evaluator):
 
         plt.savefig(self.scraper.get_filename().replace(".json", "-SentimentAnlysis.png"))
         plt.close()
-        
+
+    def get_json_data(self):
+        return self.sentiemnt

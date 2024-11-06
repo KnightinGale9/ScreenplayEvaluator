@@ -102,9 +102,9 @@ class SentenceComplexity(GraphParent):
         yngve_tot = 0
         frazier_tot = 0
         nodes_tot = 0
-        yngves = []
-        fraziers = []
-        wordss = []
+        self.yngves = []
+        self.fraziers = []
+        self.wordss = []
 
         parser = CoreNLPParser(url='http://localhost:9000')
         for s in self.sentences:
@@ -117,36 +117,36 @@ class SentenceComplexity(GraphParent):
             words = self.calc_words(t)
             words_tot += words
             sents += 1
-            wordss.append(words)
+            self.wordss.append(words)
             yngve = self.calc_yngve(t, 0)
             yngve_avg = float(yngve)/words
             yngve_tot += yngve_avg
-            yngves.append(yngve)
+            self.yngves.append(yngve)
             nodes = self.calc_nodes(t)
             nodes_avg = float(nodes)/words
             nodes_tot += nodes_avg
             frazier = self.calc_frazier(t, 0, "")
             frazier_avg = float(frazier)/words
             frazier_tot += frazier_avg
-            fraziers.append(frazier)
+            self.fraziers.append(frazier)
             # print "Sentence=%d\twords=%d\tyngve=%f\tfrazier=%f\tnodes=%f" % (sents, words, yngve_avg, frazier_avg, nodes_avg)
-        yngve_avg = float(yngve_tot)/sents
-        frazier_avg = float(frazier_tot)/sents
+        self.yngve_avg = float(yngve_tot)/sents
+        self.frazier_avg = float(frazier_tot)/sents
         nodes_avg = float(nodes_tot)/sents
-        words_avg = float(words_tot)/sents
-        print("Total\tsents=%d\twords=%f\tyngve=%f\tfrazier=%f\tnodes=%f" % (sents, words_avg, yngve_avg, frazier_avg, nodes_avg))
+        self.words_avg = float(words_tot)/sents
+        # print("Total\tsents=%d\twords=%f\tyngve=%f\tfrazier=%f\tnodes=%f" % (sents, words_avg, yngve_avg, frazier_avg, nodes_avg))
 
-        f = open("test-complexity.json", "w")
-        data = {"yngves": yngves, "fraziers": fraziers, "words": wordss}
-        json.dump({"yngves": yngves, "fraziers": fraziers, "words": words, "averages": {"yngve": yngve_avg, "frazier": frazier_avg, "words": words_avg}}, f)
-        f.close()
+        data = {"yngves": self.yngves, "fraziers": self.fraziers, "words": self.wordss}
         self.sentence_data_df =pd.DataFrame()
         for i in data:
             self.sentence_data_df[i]=data[i]
         self.sentence_data_df["yngves_mean"]=self.sentence_data_df['yngves']/self.sentence_data_df['words']
         self.sentence_data_df["fraziers_mean"] = self.sentence_data_df['fraziers'] / self.sentence_data_df['words']
-        print(self.sentence_data_df)
-
+        # print(self.sentence_data_df)
+    def get_json_data(self):
+        return {"yngves": self.yngves, "fraziers": self.fraziers, "words": self.wordss,
+                   "averages": {"yngve": self.yngve_avg, "frazier": self.frazier_avg, "words": self.words_avg}}
+        f.close()
     def sentence_length_graph(self):
         sentence_length = {}
         for idx, line in self.sentence_data_df.iterrows():
@@ -160,7 +160,7 @@ class SentenceComplexity(GraphParent):
         sorted_sentence.sort()
         keys, values = zip(*sorted_sentence)
         plt.bar(keys, values)
-        plt.savefig(self.scraper.get_filename().replace(".json", "-sentence_length_graph.png"))
+        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-sentence_length_graph.png")}')
         plt.close
     def sentence_length_indexing(self):
         # fig,ax = plt.subplot()
@@ -177,7 +177,7 @@ class SentenceComplexity(GraphParent):
         plt.xlim([0, self.scraper.get_locationdf()['sentence_index'].iloc[-1]])
         plt.xlabel([])
         self.x_axis_alt_bands()
-        plt.savefig(self.scraper.get_filename().replace(".json", "-sentence_length_indexing.png"))
+        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-sentence_length_indexing.png")}')
         plt.close
     def yngves_and_frazier_mean(self):
         # fig,ax = plt.subplot()
@@ -192,5 +192,5 @@ class SentenceComplexity(GraphParent):
 
         plt.xlim([0, self.scraper.get_locationdf()['sentence_index'].iloc[-1]])
         self.x_axis_alt_bands()
-        plt.savefig(self.scraper.get_filename().replace(".json", "-yngves_and_frazier_mean.png"))
+        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-yngves_and_frazier_mean.png")}')
         plt.close

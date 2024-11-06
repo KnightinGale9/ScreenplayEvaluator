@@ -5,32 +5,35 @@ from CodeBase.Evaluator import Evaluator
 
 class SceneLength(Evaluator):
     def create_scene_length(self):
-        print(self.scraper.get_locationlist())
+        # print(self.scraper.get_locationlist())
         filtered_list = [x - 1 for x in self.scraper.get_locationlist() if x > 0]
 
         scenedf = self.scraper.get_fulldf()[self.scraper.get_fulldf().index.isin(filtered_list)]['sentence_index']
-        print(scenedf)
+        # print(scenedf)
         scenelength=list(scenedf)
         scenelength.insert(0,0)
-        print("debug:",scenelength)
+        # print("debug:",scenelength)
         self.differences = [scenelength[i + 1] - scenelength[i] for i in range(len(scenelength) - 1)]
 
     def graph_over_time(self):
         keys = [i for i in range(len(self.differences))]
         values = self.differences
         plt.bar(keys, values )
-        plt.savefig(self.scraper.get_filename().replace(".json", "-SceneLengthOverTime.png"))
+        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-SceneLengthOverTime.png")}')
         plt.close()
     def graph_over_length(self):
-        self.scenellcolat = {}
+        self.scenelenlcolat = {}
         for x in self.differences:
             # print(x)
-            if x not in self.scenellcolat:
-                self.scenellcolat[x] = 0
-            self.scenellcolat[x] += 1
-        sorted_sentence = list(self.scenellcolat.items())
+            if x not in self.scenelenlcolat:
+                self.scenelenlcolat[x] = 0
+            self.scenelenlcolat[x] += 1
+        sorted_sentence = list(self.scenelenlcolat.items())
         sorted_sentence.sort()
         keys, values = zip(*sorted_sentence)
         plt.bar(keys, values, )
-        plt.savefig(self.scraper.get_filename().replace(".json", "-SceneLengthIndex.png"))
+        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-SceneLengthIndex.png")}')
         plt.close()
+
+    def get_json_data(self):
+        return self.scenelenlcolat,self.differences
