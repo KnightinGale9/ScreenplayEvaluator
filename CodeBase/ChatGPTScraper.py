@@ -13,7 +13,6 @@ nlp = spacy.load("en_core_web_sm") #fast but less accurate
 class ChatGPTScraper(Scraper):
     def __init__(self,dirpath,file_path):
         self.dir_path=dirpath
-
         try:
             with open('../input/example.txt', 'r') as file:
                 self.data = file.read()

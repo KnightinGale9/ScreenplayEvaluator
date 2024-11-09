@@ -209,6 +209,5 @@ class SentenceComplexity(GraphParent):
         ax.set_ylabel('Complexity Score')
         plt.legend()
         # ax.legend(fontsize=16)  # Adjust the font size as needed
-
         plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-yngves_and_frazier_mean.png")}')
         plt.close()

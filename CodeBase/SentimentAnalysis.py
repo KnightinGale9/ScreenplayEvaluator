@@ -42,6 +42,7 @@ class SentimentAnalysis(Evaluator):
         # Plot positive sentiment scores as green bars
         bars_positive = ax.scatter(positive.index, positive['sentiment_score'], color='green', label='Positive')
 
+
         # Plot negative sentiment scores as red bars
         bars_negative = ax.scatter(negative.index, negative['sentiment_score'], color='red', label='Negative')
 
