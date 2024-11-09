@@ -15,18 +15,22 @@ from CodeBase.DirectedGraph import DirectedGraph
 from CodeBase.CordGraph import CordGraph
 from CodeBase.SVO import SVO
 
-directory_path= Path("../../ScreenPy/ParserOutput/test")
-
-for file_path in directory_path.glob("*.json"):
+# directory_path= Path("../../ScreenPy/ParserOutput/test")
+directory_path= Path("../input")
+for file_path in directory_path.glob("*.txt"):
     with file_path.open('r') as file:
         content = file.read()
+        print(file)
         dir_name=re.sub('\.\w+$','',file_path.name)
         mkdir=f"../output/test/{dir_name}"
         mkdir_path = Path(f"../output/test/{dir_name}")
         mkdir_path.mkdir(parents=True,exist_ok=True)
 
 
-        screenplay_main=ScreenPyScrapper(mkdir,f"{directory_path}/{file_path.name}")
+        # screenplay_main=ScreenPyScrapper(mkdir,f"{directory_path}/{file_path.name}")
+
+        screenplay_main=ChatGPTScraper(mkdir,f"{directory_path}/{file_path.name}")
+
         screenplay_main.screenplay_scrape()
         screenplay_main.dataframe_creation()
 

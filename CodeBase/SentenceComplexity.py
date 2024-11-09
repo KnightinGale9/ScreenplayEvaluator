@@ -185,7 +185,7 @@ class SentenceComplexity(GraphParent):
         ax.set_ylabel("Sentence Length")
         ax.set_xlabel("Sentence Index")
         plt.legend()
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-sentence_length_graph2.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-sentence_length_graph.png")}')
         plt.close()
     def yngves_and_frazier_mean(self):
         plt.rcParams['font.size'] = 18  # Adjust size as needed
@@ -194,9 +194,9 @@ class SentenceComplexity(GraphParent):
 
         keys, values = self.sentence_data_df.index, self.sentence_data_df['yngves_mean']
 
-        plt.plot(keys, values,label = "yngves_mean")
+        plt.scatter(keys, values,label = "yngves_mean")
         keys, values = self.sentence_data_df.index, self.sentence_data_df['fraziers_mean']
-        plt.plot(keys, values,label = "fraziers_mean")
+        plt.scatter(keys, values,label = "fraziers_mean")
 
         plt.xticks(np.append([0], list(self.scraper.get_locationdf()['sentence_index'])))
 
@@ -210,5 +210,5 @@ class SentenceComplexity(GraphParent):
         plt.legend()
         # ax.legend(fontsize=16)  # Adjust the font size as needed
 
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-yngves_and_frazier_mean1.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-yngves_and_frazier_mean.png")}')
         plt.close()
