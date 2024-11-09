@@ -11,11 +11,15 @@ nlp = spacy.load("en_core_web_sm") #fast but less accurate
 
 
 class ScreenPyScrapper(Scraper):
-    def __init__(self,file_path):
+    def __init__(self,dirpath,file_path):
+        self.dir_path=dirpath
         try:
             f = open(file_path)
             self.data = json.load(f)
-            self.filename=file_path
+            match = re.search(r"\/(.*)$", file_path)
+            if match:
+                self.filename=match.group(1)  # Access group 1
+                print(self.filename)
             f.close()
         except FileNotFoundError:
             print(file_path+ " was not found.")

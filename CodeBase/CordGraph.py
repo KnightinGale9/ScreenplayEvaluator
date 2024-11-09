@@ -37,4 +37,4 @@ class CordGraph(Evaluator):
         chord.opts(
             opts.Chord(cmap='Category20', edge_cmap='Category20', edge_color=dim('source').str(),
                        labels='name', node_color=dim('index').str()))
-        hv.save(chord, f"../output/{self.scraper.get_filename().replace('.json','-chord_plot.html')}")  # for HTML
+        hv.save(chord, f"{self.scraper.get_output_dir()}/{self.replace_file_extension('-chord_plot.html')}")  # for HTML

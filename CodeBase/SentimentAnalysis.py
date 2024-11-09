@@ -40,18 +40,18 @@ class SentimentAnalysis(Evaluator):
         negative = sentiment[sentiment['sentiment_score'] < 0]
 
         # Plot positive sentiment scores as green bars
-        bars_positive = ax.bar(positive.index, positive['sentiment_score'], color='green', label='Positive')
+        bars_positive = ax.scatter(positive.index, positive['sentiment_score'], color='green', label='Positive')
 
         # Plot negative sentiment scores as red bars
-        bars_negative = ax.bar(negative.index, negative['sentiment_score'], color='red', label='Negative')
+        bars_negative = ax.scatter(negative.index, negative['sentiment_score'], color='red', label='Negative')
 
         # Add labels and title
-        ax.set_xlabel('ID')
+        ax.set_xlabel('Sentence Index ')
         ax.set_ylabel('Sentiment Score')
         ax.set_title('Sentiment Analysis')
-        # ax.legend()
+        plt.title("Sentiment score Over Sentence Index")
 
-        plt.savefig(self.scraper.get_filename().replace(".json", "-SentimentAnlysis.png"))
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension("-SentimentAnlysis.png")}')
         plt.close()
 
     def get_json_data(self):

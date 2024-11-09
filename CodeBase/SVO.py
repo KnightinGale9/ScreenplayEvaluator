@@ -114,5 +114,5 @@ class SVO(Evaluator):
                 continue
         # Parse the example sentence
 
-        with open('../output/SVO.json', 'w') as f:
+        with open(f'{self.scraper.get_output_dir()}/{self.replace_file_extension("-SVO.json")}', "w") as f:
             json.dump(output, f)

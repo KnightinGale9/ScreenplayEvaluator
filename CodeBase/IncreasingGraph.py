@@ -17,8 +17,12 @@ class IncreasingGraph(GraphParent):
         plt.xlim([0, self.scraper.get_locationdf()['sentence_index'].iloc[-1]])
 
         self.x_axis_alt_bands(ax=ax)
-        plt.xticks([])
-        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-increasingGraph.png")}')
+        plt.xticks(list(range(0,list(self.scraper.get_locationdf()['sentence_index'])[-1], 500)))
+        plt.title("Increasing Graph ")
+        ax.set_xlabel('Sentence Index')
+        ax.set_ylabel('Character Presence ')
+        # plt.legend(ncol=3)
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-increasingGraph.png")}')
         plt.close()
     def get_json_data(self):
         return self.speaking

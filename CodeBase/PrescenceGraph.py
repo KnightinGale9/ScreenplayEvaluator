@@ -3,19 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class PrescenceGraph(GraphParent):
-    def set_sorted_character(self, type):
-        if type == "name":
-            self.sorted_character = self.sorted_character_name()
-        elif type == "size":
-            self.sorted_character = self.sorted_character_length()
-        elif type == "matrix":
-            self.sorted_character = self.sorted_character_matrix()
-        elif type == "cocurancesum":
-            self.sorted_character = self.sorted_character_cocurancesum()
-        else:
-            self.sorted_character = self.scraper.get_characterdict()
-
     def prescence_graph(self):
+        self.sorted_character = self.sorted_character_cocurancesum()
+
         # Sample data for events
         char = []
         events = []
@@ -26,8 +16,7 @@ class PrescenceGraph(GraphParent):
             color.append(self.scraper.get_characterdict()[character])
 
         # Create figure and axis
-        fig, ax = plt.subplots(figsize=(10, 6))
-
+        fig, ax = plt.subplots()
         # Plotting the event plot
         ax.eventplot(events, orientation='vertical', lineoffsets=range(0, len(self.speaking)), linelengths=0.7,
                      colors=color)
@@ -37,16 +26,17 @@ class PrescenceGraph(GraphParent):
         self.y_axis_alt_bands(ax=ax)
         ax.set_xticklabels(char)
         plt.margins(0)
-        plt.yticks([])
+        plt.yticks(list(range(0,list(self.scraper.get_locationdf()['sentence_index'])[-1], 500)))
 
-        ax.set_xlabel('Character')
+        ax.set_ylabel('Sentence Index')
         ax.set_title('Presence Graph')
         # ax
         # ax.minorticks_on()
         # ax.grid(False)
         # # Adding legend manually
-        ax.legend(loc='upper right')
         plt.xticks(rotation=90)
         # plt.show()
-        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-prescenceGraph.png")}')
+        fig.tight_layout()
+
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-prescenceGraph.png")}')
         plt.close()

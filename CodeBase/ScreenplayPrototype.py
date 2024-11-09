@@ -1,16 +1,4 @@
-import json
-import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
-import nltk
-import spacy
-from spacy import displacy
-import seaborn as sns
-import colorcet as cc
-from transformers import pipeline
-from spacy.tokenizer import Tokenizer
-from scipy.cluster.hierarchy import linkage, leaves_list
-from scipy.interpolate import make_interp_spline
+from pathlib import Path
 import regex as re
 
 from CodeBase.HeapsLaw import HeapsLaw
@@ -27,62 +15,67 @@ from CodeBase.DirectedGraph import DirectedGraph
 from CodeBase.CordGraph import CordGraph
 from CodeBase.SVO import SVO
 
-# nlp = spacy.load("en_core_web_trf") #slow but more accurate
-nlp = spacy.load("en_core_web_sm") #fast but less accurate
+directory_path= Path("../../ScreenPy/ParserOutput/test")
+
+for file_path in directory_path.glob("*.json"):
+    with file_path.open('r') as file:
+        content = file.read()
+        dir_name=re.sub('\.\w+$','',file_path.name)
+        mkdir=f"../output/test/{dir_name}"
+        mkdir_path = Path(f"../output/test/{dir_name}")
+        mkdir_path.mkdir(parents=True,exist_ok=True)
 
 
-# screenplay_main=ChatGPTScraper("example.txt")
-screenplay_main=ScreenPyScrapper("indianajonesandtheraidersofthelostark.json")
-screenplay_main.screenplay_scrape()
-screenplay_main.dataframe_creation()
+        screenplay_main=ScreenPyScrapper(mkdir,f"{directory_path}/{file_path.name}")
+        screenplay_main.screenplay_scrape()
+        screenplay_main.dataframe_creation()
 
 
 
 
-increasinggraph = IncreasingGraph(screenplay_main)
-increasinggraph.combined_lines()
-increasinggraph.increasing_graph()
+        increasinggraph = IncreasingGraph(screenplay_main)
+        increasinggraph.combined_lines()
+        increasinggraph.increasing_graph()
+        #
+        prescencegraph = PrescenceGraph(screenplay_main)
+        prescencegraph.combined_lines()
+        prescencegraph.prescence_graph()
+        #
+        # scenelength = SceneLength(screenplay_main)
+        # scenelength.create_scene_length()
+        # scenelength.graph_over_time()
+        # scenelength.graph_over_length()
+        #
+        # sentimentanalysis = SentimentAnalysis(screenplay_main)
+        # sentimentanalysis.create_sentiment_list()
+        # sentimentanalysis.create_graph()
+        #
+        heapslaw = HeapsLaw(screenplay_main)
+        heapslaw.heaps_law()
+        heapslaw.plot_vocab_growth()
 
-prescencegraph = PrescenceGraph(screenplay_main)
-prescencegraph.combined_lines()
-prescencegraph.set_sorted_character("matrix")
-prescencegraph.prescence_graph()
-
-scenelength = SceneLength(screenplay_main)
-scenelength.create_scene_length()
-scenelength.graph_over_time()
-scenelength.graph_over_length()
-
-sentimentanalysis = SentimentAnalysis(screenplay_main)
-sentimentanalysis.create_sentiment_list()
-sentimentanalysis.create_graph()
-
-heapslaw = HeapsLaw(screenplay_main)
-heapslaw.heaps_law()
-heapslaw.plot_vocab_growth()
-
-sentencecomplexity = SentenceComplexity(screenplay_main)
-sentencecomplexity.sentence_complexity_calculations()
-sentencecomplexity.sentence_length_graph()
-sentencecomplexity.sentence_length_indexing()
-sentencecomplexity.yngves_and_frazier_mean()
-
-partofspeech = PartOfSpeech(screenplay_main)
-partofspeech.pos_aggregate()
-partofspeech.pos_pie_chart()
-partofspeech.key_pos_pie_chart()
-partofspeech.noun_pie_chart()
-partofspeech.adj_pie_chart()
-partofspeech.adverb_pie_chart()
-partofspeech.verb_pie_chart()
-
-DirectedGraph = DirectedGraph(screenplay_main)
-DirectedGraph.create_directed_graph()
-DirectedGraph.creategraph()
-
-CordGraph = CordGraph(screenplay_main)
-CordGraph.create_data()
-CordGraph.create_graph()
-
-SVO = SVO(screenplay_main)
-SVO.create_data()
+        sentencecomplexity = SentenceComplexity(screenplay_main)
+        sentencecomplexity.sentence_complexity_calculations()
+        sentencecomplexity.sentence_length_graph()
+        sentencecomplexity.sentence_length_indexing()
+        sentencecomplexity.yngves_and_frazier_mean()
+        #
+        # partofspeech = PartOfSpeech(screenplay_main)
+        # partofspeech.pos_aggregate()
+        # partofspeech.pos_pie_chart()
+        # partofspeech.key_pos_pie_chart()
+        # partofspeech.noun_pie_chart()
+        # partofspeech.adj_pie_chart()
+        # partofspeech.adverb_pie_chart()
+        # partofspeech.verb_pie_chart()
+        #
+        # dGraph = DirectedGraph(screenplay_main)
+        # dGraph.create_directed_graph()
+        # dGraph.creategraph()
+        #
+        # CGraph = CordGraph(screenplay_main)
+        # CGraph.create_data()
+        # CGraph.create_graph()
+        #
+        # svvo = SVO(screenplay_main)
+        # svvo.create_data()

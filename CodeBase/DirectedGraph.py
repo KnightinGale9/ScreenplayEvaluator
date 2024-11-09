@@ -8,13 +8,11 @@ from CodeBase.Evaluator import Evaluator
 class DirectedGraph(Evaluator):
 
     def create_directed_graph(self):
-
-        self.scraper.get_headingdf()["heading"]
-        loc_graph = {}
+        self.loc_graph = {}
         i = 1
         for loc in self.scraper.get_headingdf()["heading"]:
-            if loc not in loc_graph:
-                loc_graph[loc] = i
+            if loc not in self.loc_graph:
+                self.loc_graph[loc] = i
                 i += 1
         self.char_forced_directed = {}
         for offset, char in enumerate(self.scraper.get_characterdict()):
@@ -28,7 +26,7 @@ class DirectedGraph(Evaluator):
                 if charac == 1:
                     missed = 0
                     self.char_forced_directed[char]["x_val"].append(idx)
-                    self.char_forced_directed[char]["y_val"].append(loc_graph[location] + 0.5 * offset)
+                    self.char_forced_directed[char]["y_val"].append(self.loc_graph[location] + 0.5 * offset)
                 else:
                     missed += 1
                 # if charac !=1 and prev_charac==1:
@@ -37,7 +35,7 @@ class DirectedGraph(Evaluator):
                 if missed == 20:
                     self.char_forced_directed[char]["x_val"].append(np.nan)
                     self.char_forced_directed[char]["y_val"].append(np.nan)
-                prev_loc = loc_graph[location]
+                prev_loc = self.loc_graph[location]
                 prev_charac = charac
         # print(x_val)
         # print(y_val)
@@ -47,7 +45,7 @@ class DirectedGraph(Evaluator):
         fig, ax = plt.subplots(figsize=(10, 5))
 
         for character in self.scraper.get_characterdict():
-            if np.nan in self.char_forced_directed[character]["x_val"]:
+            if np.nan in self.char_forced_directed[character]["x_val"] or len(self.char_forced_directed[character]["x_val"])<2:
                 plt.plot(self.char_forced_directed[character]["x_val"], self.char_forced_directed[character]["y_val"], marker='o',
                          color=self.scraper.get_characterdict()[character], label='Interpolated Points')  # Line plot with markers
             else:
@@ -65,6 +63,11 @@ class DirectedGraph(Evaluator):
                 plt.plot(self.char_forced_directed[character]["x_val"], self.char_forced_directed[character]["y_val"], 'o',
                          label='Original Points')  # Original points
                 plt.plot(x_new, y_new, '-', label='Cubic Interpolation')  # Interpolated curve
-            plt.title(character)
-        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-DirectedGraph.png")}')
+            plt.title("Forced Directed Graph")
+            ax.set_xlabel('Sentence Index')
+            ax.set_ylabel('Scene')
+            plt.yticks(list(range(1, len(self.loc_graph) + 1, 3)),
+                       [val for i, val in enumerate(self.loc_graph.keys()) if (i) % 3 == 0])
+
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-DirectedGraph.png")}')
         plt.close()

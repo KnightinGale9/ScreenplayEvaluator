@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 import spacy
 
 from CodeBase.Evaluator import Evaluator
@@ -123,7 +124,9 @@ class PartOfSpeech(Evaluator):
             sizes.append(self.pos_count[temp])
         fig, ax = plt.subplots()
         ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-pos-piechart.png")}')
+        plt.title("Part of Speech Distribution")
+        ax.legend(loc='best')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.scraper.get_filename().replace(".json", "-pos-piechart.png")}')
         plt.close()
 
     def key_pos_pie_chart(self):
@@ -137,9 +140,11 @@ class PartOfSpeech(Evaluator):
             sizes.append(self.pos_count[temp])
 
         fig, ax = plt.subplots()
+        plt.title("Noun,ADV,ADJ and VERB Distribution")
+        ax.legend(loc='best')
         # plt.title("Noun")
         ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-curated-pos-piechart.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.scraper.get_filename().replace(".json", "-curated-pos-piechart.png")}')
         plt.close()
 
     def noun_pie_chart(self):
@@ -153,9 +158,10 @@ class PartOfSpeech(Evaluator):
             sizes.append(self.tag_count[temp])
 
         fig, ax = plt.subplots()
-        plt.title("Noun")
+        plt.title("Noun Distribution")
+        ax.legend(loc='best')
         ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-noun-piechart.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.scraper.get_filename().replace(".json", "-noun-piechart.png")}')
         plt.close()
 
     def adj_pie_chart(self):
@@ -169,9 +175,10 @@ class PartOfSpeech(Evaluator):
             sizes.append(self.tag_count[temp])
 
         fig, ax = plt.subplots()
-        plt.title("adjective")
+        plt.title("Adjective Distribution")
+        ax.legend(loc='best')
         ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-adj-piechart.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.scraper.get_filename().replace(".json", "-adj-piechart.png")}')
         plt.close()
 
     def verb_pie_chart(self):
@@ -185,9 +192,10 @@ class PartOfSpeech(Evaluator):
             sizes.append(self.tag_count[temp])
 
         fig, ax = plt.subplots()
-        plt.title("Verb")
+        plt.title("Verb Distribution")
+        ax.legend(loc='best')
         ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-verb-piechart.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.scraper.get_filename().replace(".json", "-verb-piechart.png")}')
         plt.close()
 
 
@@ -202,7 +210,36 @@ class PartOfSpeech(Evaluator):
             sizes.append(self.tag_count[temp])
 
         fig, ax = plt.subplots()
-        plt.title("Adverb")
+        plt.title("Adverb Distribution")
+        ax.legend(loc='best')
         ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-adverb-piechart.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-adverb-piechart.png")}')
         plt.close()
+
+    def gini(self):
+        pos = "NOUN"
+        pos_list = list(self.pos_collat[pos.upper()].items())
+        pos_list.sort(key=lambda x: x[1], reverse=True)
+
+        keys, values = zip(*pos_list)
+        array = np.sort(values)
+        """Calculate the Gini coefficient of a numpy array."""
+        # based on bottom eq:
+        # http://www.statsdirect.com/help/generatedimages/equations/equation154.svg
+        # from:
+        # http://www.statsdirect.com/help/default.htm#nonparametric_methods/gini.htm
+        # All values are treated equally, arrays must be 1d:
+        array = array.flatten()
+        if np.amin(array) < 0:
+            # Values cannot be negative:
+            array -= np.amin(array)
+        # Values cannot be 0:
+        array = array + 0.0000001
+        # Values must be sorted:
+        array = np.sort(array)
+        # Index per array element:
+        index = np.arange(1, array.shape[0] + 1)
+        # Number of array elements:
+        n = array.shape[0]
+        # Gini coefficient:
+        return ((np.sum((2 * index - n - 1) * array)) / (n * np.sum(array)))

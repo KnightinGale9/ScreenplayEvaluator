@@ -1,8 +1,4 @@
 class Scraper(object):
-    # def __new__(cls):
-    #     if not hasattr(cls, 'instance'):
-    #         cls.instance = super(Scraper, cls).__new__(cls)
-    #     return cls.instance
     def screenplay_scrape(self):
         pass
     def dataframe_creation(self,character_removal=[]):
@@ -23,3 +19,5 @@ class Scraper(object):
         return self.locationcocurence
     def get_locationlist(self):
         return self.location_list
+    def get_output_dir(self):
+        return self.dir_path

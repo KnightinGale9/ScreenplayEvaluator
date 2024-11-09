@@ -64,6 +64,7 @@ class GraphParent(Evaluator):
         sorted_character = sorted(sorted_character, key=lambda x: len(x[1]), reverse=True)
         print(sorted_character)
         sorted_character = [k for k, v in sorted_character]
+
         return sorted_character
 
     def sorted_character_matrix(self):
@@ -81,13 +82,9 @@ class GraphParent(Evaluator):
 
     def sorted_character_cocurancesum(self):
         co_occurrence = np.dot(self.scraper.get_locationcocurence().T, self.scraper.get_locationcocurence())
-        linkage_matrix = linkage(co_occurrence, method='single')
-        dendrogram_order = leaves_list(linkage_matrix)
+        co_occurrence_sums = co_occurrence.sum(axis=1)
 
-        # Reorder characters
-        characters = self.scraper.get_locationcocurence().columns
-        reordered_characters = characters[dendrogram_order]
-
-        # Reorder data for plotting
-        sorted_character = self.scraper.get_locationcocurence()[reordered_characters]
+        # Sort characters based on their co-occurrence sums
+        sorted_indices = np.argsort(co_occurrence_sums)[::-1]
+        sorted_character = self.scraper.get_locationcocurence().columns[sorted_indices]
         return sorted_character

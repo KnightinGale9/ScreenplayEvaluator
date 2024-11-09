@@ -147,50 +147,68 @@ class SentenceComplexity(GraphParent):
         return {"yngves": self.yngves, "fraziers": self.fraziers, "words": self.wordss,
                    "averages": {"yngve": self.yngve_avg, "frazier": self.frazier_avg, "words": self.words_avg}}
         f.close()
-    def sentence_length_graph(self):
+    def sentence_length_indexing(self):
         sentence_length = {}
         for idx, line in self.sentence_data_df.iterrows():
             line_length = line['words']
             if line_length not in sentence_length:
                 sentence_length[line_length] = 0
             sentence_length[line_length] += 1
-        # fig,ax = plt.subplot()
 
         sorted_sentence = list(sentence_length.items())
         sorted_sentence.sort()
         keys, values = zip(*sorted_sentence)
+        fig, ax = plt.subplots(figsize=(10, 5))
+
         plt.bar(keys, values)
-        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-sentence_length_graph.png")}')
-        plt.close
-    def sentence_length_indexing(self):
-        # fig,ax = plt.subplot()
-        fig, ax = plt.subplots(figsize=(20, 10))
+        plt.title("Sentence Length Count")
+        ax.set_xlabel("Sentence Length")
+        ax.set_ylabel("Count")
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-sentence_length_indexing.png")}')
+        plt.close()
+    def sentence_length_graph(self):
+        fig, ax = plt.subplots()
 
         keys, values = self.sentence_data_df.index, self.sentence_data_df['words']
         x_smooth = np.linspace(0, keys[-1], 300)
         spl = make_interp_spline(keys, values, k=3)  # k=3 indicates a cubic spline
         y_smooth = spl(x_smooth)
         plt.xticks(np.append([0], list(self.scraper.get_locationdf()['sentence_index'])))
-        plt.plot(keys, values)
+        plt.scatter(keys, values,label = "sentence_length")
 
-        plt.plot(x_smooth, y_smooth, label='Smoothed data')
+        # plt.plot(x_smooth, y_smooth,color='orange', label='Smoothed data')
         plt.xlim([0, self.scraper.get_locationdf()['sentence_index'].iloc[-1]])
-        plt.xlabel([])
+
         self.x_axis_alt_bands()
-        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-sentence_length_indexing.png")}')
-        plt.close
+        plt.xticks(list(range(0,list(self.scraper.get_locationdf()['sentence_index'])[-1], 500)))
+        plt.title("Sentence Length Index")
+        ax.set_ylabel("Sentence Length")
+        ax.set_xlabel("Sentence Index")
+        plt.legend()
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-sentence_length_graph2.png")}')
+        plt.close()
     def yngves_and_frazier_mean(self):
-        # fig,ax = plt.subplot()
+        plt.rcParams['font.size'] = 18  # Adjust size as needed
+
         fig, ax = plt.subplots(figsize=(20, 10))
 
         keys, values = self.sentence_data_df.index, self.sentence_data_df['yngves_mean']
 
-        plt.xticks(np.append([0], list(self.scraper.get_locationdf()['sentence_index'])))
-        plt.plot(keys, values)
+        plt.plot(keys, values,label = "yngves_mean")
         keys, values = self.sentence_data_df.index, self.sentence_data_df['fraziers_mean']
-        plt.plot(keys, values)
+        plt.plot(keys, values,label = "fraziers_mean")
+
+        plt.xticks(np.append([0], list(self.scraper.get_locationdf()['sentence_index'])))
 
         plt.xlim([0, self.scraper.get_locationdf()['sentence_index'].iloc[-1]])
         self.x_axis_alt_bands()
-        plt.savefig(f'../output/{self.scraper.get_filename().replace(".json", "-yngves_and_frazier_mean.png")}')
-        plt.close
+        plt.xticks(list(range(0,list(self.scraper.get_locationdf()['sentence_index'])[-1], 500)))
+
+        plt.title("Yngves and Frazier mean score")
+        ax.set_xlabel('Sentence Index')
+        ax.set_ylabel('Complexity Score')
+        plt.legend()
+        # ax.legend(fontsize=16)  # Adjust the font size as needed
+
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-yngves_and_frazier_mean1.png")}')
+        plt.close()
