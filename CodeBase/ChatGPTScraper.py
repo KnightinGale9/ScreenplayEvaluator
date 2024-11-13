@@ -14,7 +14,7 @@ class ChatGPTScraper(Scraper):
     def __init__(self,dirpath,file_path):
         self.dir_path=dirpath
         try:
-            with open('../input/example.txt', 'r') as file:
+            with open(file_path, 'r') as file:
                 self.data = file.read()
             self.filename=file_path
             match = re.search(r"\/(.*)$", file_path)
@@ -30,7 +30,7 @@ class ChatGPTScraper(Scraper):
         sent_idx = 0
         location = ""
         story_combine = ""
-        pattern1 = r"(INT\.|EXT\.|I\/E\.)\s+([A-Za-zÉ'\s]+?)\s+-\s+([A-Za-z\s]*)\s*"
+        pattern1 = r"(INT\.|EXT\.|I\/E\.|INT./EXT.)\s+(.*)\s+-\s+(.*)\s*"
         pattern2 = r"(INT\.|EXT\.|I\/E\.)\s+([A-Za-z\s]+?)\s+-\s+([A-Za-z\s]+)?\s+-\s+([A-Za-z]*)\s*"
         screen = self.data.split("\n\n")
 

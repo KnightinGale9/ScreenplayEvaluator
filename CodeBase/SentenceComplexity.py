@@ -146,7 +146,6 @@ class SentenceComplexity(GraphParent):
     def get_json_data(self):
         return {"yngves": self.yngves, "fraziers": self.fraziers, "words": self.wordss,
                    "averages": {"yngve": self.yngve_avg, "frazier": self.frazier_avg, "words": self.words_avg}}
-        f.close()
     def sentence_length_indexing(self):
         sentence_length = {}
         for idx, line in self.sentence_data_df.iterrows():
@@ -170,13 +169,10 @@ class SentenceComplexity(GraphParent):
         fig, ax = plt.subplots()
 
         keys, values = self.sentence_data_df.index, self.sentence_data_df['words']
-        x_smooth = np.linspace(0, keys[-1], 300)
         spl = make_interp_spline(keys, values, k=3)  # k=3 indicates a cubic spline
-        y_smooth = spl(x_smooth)
         plt.xticks(np.append([0], list(self.scraper.get_locationdf()['sentence_index'])))
         plt.scatter(keys, values,label = "sentence_length")
 
-        # plt.plot(x_smooth, y_smooth,color='orange', label='Smoothed data')
         plt.xlim([0, self.scraper.get_locationdf()['sentence_index'].iloc[-1]])
 
         self.x_axis_alt_bands()

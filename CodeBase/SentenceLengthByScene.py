@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 from CodeBase.Evaluator import Evaluator
 
 
-class SceneLength(Evaluator):
+class SentenceLengthByScene(Evaluator):
     def create_scene_length(self):
         # print(self.scraper.get_locationlist())
         filtered_list = [x - 1 for x in self.scraper.get_locationlist() if x > 0]
@@ -25,7 +25,7 @@ class SceneLength(Evaluator):
 
         ax.set_xlabel('Scene Index')
         ax.set_ylabel('Sentence Count')
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-SceneLengthOverTime.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-SceneBySentenceLengthOverTime.png")}')
         plt.close()
     def graph_over_length(self):
         self.scenelenlcolat = {}
@@ -43,7 +43,7 @@ class SceneLength(Evaluator):
         plt.title("Scene Length Index")
         ax.set_xlabel('Scene Length')
         ax.set_ylabel('Count')
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-SceneLengthIndex.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-SceneBySentenceLengthIndex.png")}')
         plt.close()
 
     def get_json_data(self):

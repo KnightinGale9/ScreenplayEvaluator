@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import spacy
 
 from CodeBase.Evaluator import Evaluator
@@ -19,41 +20,21 @@ class PartOfSpeech(Evaluator):
                     "DET": "determiner",
                     "INTJ": "interjection",
                     "NOUN": "noun",
-                    "NUM": "numeral",
-                    "PART": "particle",
                     "PRON": "pronoun",
                     "PROPN": "proper noun",
-                    "PUNCT": "punctuation",
                     "SCONJ": "subordinating conjunction",
-                    "SYM": "symbol",
                     "VERB": "verb",
-                    "X": "other",
-                    "EOL": "end of line",
-                    "SPACE": "space",
-                    ".": "punctuation mark, sentence closer",
-                    ",": "punctuation mark, comma",
-                    "-LRB-": "left round bracket",
-                    "-RRB-": "right round bracket",
-                    "``": "opening quotation mark",
-                    '""': "closing quotation mark",
-                    "''": "closing quotation mark",
-                    ":": "punctuation mark, colon or ellipsis",
-                    "$": "symbol, currency",
-                    "#": "symbol, number sign",
                     "AFX": "affix",
                     "CC": "conjunction, coordinating",
                     "CD": "cardinal number",
                     "DT": "determiner",
                     "EX": "existential there",
                     "FW": "foreign word",
-                    "HYPH": "punctuation mark, hyphen",
                     "IN": "conjunction, subordinating or preposition",
                     "JJ": "adjective (English), other noun-modifier (Chinese)",
                     "JJR": "adjective, comparative",
                     "JJS": "adjective, superlative",
-                    "LS": "list item marker",
                     "MD": "verb, modal auxiliary",
-                    "NIL": "missing tag",
                     "NN": "noun, singular or mass",
                     "NNP": "noun, proper singular",
                     "NNPS": "noun, proper plural",
@@ -82,10 +63,9 @@ class PartOfSpeech(Evaluator):
                     "ADD": "email",
                     "NFP": "superfluous punctuation",
                     "GW": "additional word in multi-word expression",
-                    "XX": "unknown",
                     "BES": 'auxiliary "be"',
                     "HVS": 'forms of "have"',
-                    "_SP": "whitespace"}
+                    }
 
     def pos_aggregate(self):
         self.pos_count = {
@@ -111,113 +91,45 @@ class PartOfSpeech(Evaluator):
                 if token.tag_ not in self.tag_count:
                     self.tag_count[token.tag_] = 0
                 self.tag_count[token.tag_] += 1
-        for i in ['SPACE', 'SYM', 'X', 'PUNCT', 'NUM']:
-            self.pos_count.pop(i)
         # print(self.tag_count)
     def get_json_data(self):
-        return self.pos_count,self.pos_collat,self.tag_count
-    def pos_pie_chart(self):
-        labels = []
-        sizes = []
-        for temp in self.pos_count.keys():
-            labels.append(self.pos_full[temp])
-            sizes.append(self.pos_count[temp])
-        fig, ax = plt.subplots()
-        ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.title("Part of Speech Distribution")
-        ax.legend(loc='best')
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.scraper.get_filename().replace(".json", "-pos-piechart.png")}')
-        plt.close()
+        return {"PartOfSpeech":self.pos_count,
+                "word_in_partofspeech":self.pos_collat,
+                "Tag_Count":self.tag_count}
 
-    def key_pos_pie_chart(self):
-        keys_to_keep = ["NOUN", "ADV", "ADJ", "VERB"]
-        subset_dict = {k: self.pos_count[k] for k in keys_to_keep if k in self.pos_count}
+    def part_of_speech_investigation(self):
+        keep = []
+        for k in self.pos_count:
+            if k in self.pos_full:
+                keep.append(k)
+        temp_dict = dict((k, self.pos_count[k]) for k in keep)
+        posss = pd.DataFrame()
+        posss["Part of Speech"] = [self.pos_full[k] for k in temp_dict]
+        posss["values"] = temp_dict.values()
+        posss["percent"] = posss['values'] / posss['values'].sum()
+        posss.set_index("Part of Speech", inplace=True)
+        gini_val = {}
+        for key in temp_dict:
+            gini_val[key] = self.gini(key)
+        posss["gini"] = gini_val.values()
+        posss.loc["total"] = [posss['values'].sum(), np.nan, np.nan]
+        posss.to_csv(f'{self.scraper.get_output_dir()}/{self.replace_file_extension("-pos_data.csv")}')
 
-        labels = []
-        sizes = []
-        for temp in subset_dict.keys():
-            labels.append(self.pos_full[temp])
-            sizes.append(self.pos_count[temp])
+    def tag_investigation(self):
+        posss = pd.DataFrame()
+        keep = []
+        for k in self.tag_count:
+            if k in self.pos_full:
+                keep.append(k)
+        temp_dict= dict((k, self.tag_count[k]) for k in keep)
+        posss["Part of Speech"] = [self.pos_full[k] for k in temp_dict]
+        posss["values"] = temp_dict.values()
+        posss["percent"] = posss['values'] / posss['values'].sum()
+        posss.set_index("Part of Speech", inplace=True)
+        posss.loc["total"] = [posss['values'].sum(), np.nan]
+        posss.to_csv(f'{self.scraper.get_output_dir()}/{self.replace_file_extension("-tag_data.csv")}')
 
-        fig, ax = plt.subplots()
-        plt.title("Noun,ADV,ADJ and VERB Distribution")
-        ax.legend(loc='best')
-        # plt.title("Noun")
-        ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.scraper.get_filename().replace(".json", "-curated-pos-piechart.png")}')
-        plt.close()
-
-    def noun_pie_chart(self):
-        keys_to_keep = ["NN", "NNP", "NNPS", "NNS"]
-        subset_dict = {k: self.tag_count[k] for k in keys_to_keep if k in self.tag_count}
-
-        labels = []
-        sizes = []
-        for temp in subset_dict.keys():
-            labels.append(self.tag_count[temp])
-            sizes.append(self.tag_count[temp])
-
-        fig, ax = plt.subplots()
-        plt.title("Noun Distribution")
-        ax.legend(loc='best')
-        ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.scraper.get_filename().replace(".json", "-noun-piechart.png")}')
-        plt.close()
-
-    def adj_pie_chart(self):
-        keys_to_keep = ["JJ", "JJR", "JJS"]
-        subset_dict = {k: self.tag_count[k] for k in keys_to_keep if k in self.tag_count}
-
-        labels = []
-        sizes = []
-        for temp in subset_dict.keys():
-            labels.append(self.pos_full[temp])
-            sizes.append(self.tag_count[temp])
-
-        fig, ax = plt.subplots()
-        plt.title("Adjective Distribution")
-        ax.legend(loc='best')
-        ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.scraper.get_filename().replace(".json", "-adj-piechart.png")}')
-        plt.close()
-
-    def verb_pie_chart(self):
-        keys_to_keep = ["MD", "VB", "VBD", "VBG", "VBN", "VBP", "VBZ"]
-        subset_dict = {k: self.tag_count[k] for k in keys_to_keep if k in self.tag_count}
-
-        labels = []
-        sizes = []
-        for temp in subset_dict.keys():
-            labels.append(self.pos_full[temp])
-            sizes.append(self.tag_count[temp])
-
-        fig, ax = plt.subplots()
-        plt.title("Verb Distribution")
-        ax.legend(loc='best')
-        ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.scraper.get_filename().replace(".json", "-verb-piechart.png")}')
-        plt.close()
-
-
-    def adverb_pie_chart(self):
-        keys_to_keep = ["RB", "RBR", "RBS", "RP", "WRB"]
-        subset_dict = {k: self.tag_count[k] for k in keys_to_keep if k in self.tag_count}
-
-        labels = []
-        sizes = []
-        for temp in subset_dict.keys():
-            labels.append(self.pos_full[temp])
-            sizes.append(self.tag_count[temp])
-
-        fig, ax = plt.subplots()
-        plt.title("Adverb Distribution")
-        ax.legend(loc='best')
-        ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-adverb-piechart.png")}')
-        plt.close()
-
-    def gini(self):
-        pos = "NOUN"
+    def gini(self,pos):
         pos_list = list(self.pos_collat[pos.upper()].items())
         pos_list.sort(key=lambda x: x[1], reverse=True)
 
