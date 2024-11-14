@@ -82,9 +82,10 @@ class SVO(Evaluator):
 
         return attrs
 
-    def __init__(self,scraper):
+    def __init__(self,scraper,tree=None):
         super().__init__(scraper)
         self.sentences=[]
+        self.premade_tree=tree
         dataframe = self.scraper.get_fulldf()
         for data in dataframe['text']:
             #maybe remove the (description lines)
@@ -101,16 +102,20 @@ class SVO(Evaluator):
     def create_data(self):
         output=[]
         # print(len(sentences))
-        for s in self.sentences:
+        for i,s in enumerate(self.sentences):
             if not s.strip():
                 continue
             try:
-                t = list(parser.raw_parse(s))[0]
-                # print(type(t), t)
+                if self.premade_tree is None:
+                    t = list(parser.raw_parse(s))[0]
+                    # print(type(t), t)
+                else:
+                    t=self.premade_tree[i]
                 ptree = ParentedTree.convert(t)
-                output.append([s,self.calculation(ptree)])
+                SVO_calc= self.calculation(ptree)
+                output.append([s,SVO_calc])
             except Exception:
-                print("skipping", s)
+                # print("skipping", s)
                 continue
         # Parse the example sentence
 

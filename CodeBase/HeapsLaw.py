@@ -31,7 +31,7 @@ class HeapsLaw(Evaluator):
         actual_vocab_size = [point[1] for point in self.vocab_growth]
         predicted_vocab_size = [point[2] for point in self.vocab_growth]
 
-        plt.figure(figsize=(10, 6))
+        fig, ax = plt.subplots()
         plt.plot(N, actual_vocab_size, label='Actual Vocabulary Size')
         # plt.plot(N, predicted_vocab_size, label='Predicted Vocabulary Size (Heap\'s Law)', linestyle='--')
         plt.xlabel('Total Number of Words (N)')
@@ -41,7 +41,7 @@ class HeapsLaw(Evaluator):
         plt.minorticks_on()
 
         plt.legend()
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension("-HeapsLaw.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension("-HeapsLaw.png")}',bbox_inches='tight')
         plt.close()
 
     def get_json_data(self):

@@ -1,8 +1,79 @@
+import pandas as pd
+import spacy
+import seaborn as sns
+import colorcet as cc
+
+# nlp = spacy.load("en_core_web_trf") #slow but more accurate
+nlp = spacy.load("en_core_web_sm") #fast but less accurate
+
 class Scraper(object):
     def screenplay_scrape(self):
         pass
-    def dataframe_creation(self,character_removal=[]):
-        pass
+    def dataframe_creation(self):
+        self.fulldf = pd.DataFrame(self.screenplay)
+        # self.fulldf.drop(self.fulldf.loc[self.fulldf['text'] == ""].index, inplace=True)
+        character_set = set(self.fulldf.loc[self.fulldf['type'] != "HEADING"]['type'])
+        sorted_character = list(character_set)
+        sorted_character.sort()
+        sorted_character = [k for k in sorted_character]
+        palette = sns.color_palette(cc.glasbey, n_colors=len(character_set))
+        #character dict
+        self.characterdict = dict(zip(sorted_character, palette))
+        if "" in self.characterdict:
+            self.characterdict.pop("")
+            for idx, row in self.fulldf.loc[self.fulldf['type'] == ""].iterrows():
+                self.fulldf.loc[idx, "text"] = str(row['type'] + " " + row['text'])
+                self.fulldf.loc[idx, 'type'] = "HEADING"
+        # print(self.fulldf)
+        self.dialoguedf = self.fulldf.loc[self.fulldf['type'] != "HEADING"].copy()
+
+        self.headingdf = self.fulldf.loc[self.fulldf['type'] == "HEADING"].copy()
+        heading_character = []
+
+        characterset = set(self.characterdict.keys())
+
+
+        for idx, row in self.headingdf.iterrows():
+            # print(idx,row['text'].upper())
+            nlpset = set()
+            # nlpset.add()
+            # print(row['text'].upper())
+            for token in nlp(row['text'].upper()):
+                nlpset.add(token.lemma_.upper())
+            heading_character.append(characterset.intersection(nlpset).copy())
+            # if idx == 80:
+            #     print(heading_character[-1], nlpset)
+        self.headingdf = self.headingdf.assign(characters=heading_character)
+        #location df
+
+        locationdf = self.fulldf[self.fulldf.index.isin(self.location_list)].copy()
+
+        # locationdf.loc[:, locationdf.columns != 'location']
+        locationchar = []
+        characterprescene = {key: [] for key in self.characterdict.keys()}
+        wclist = self.location_list[1:].copy()
+        wclist.append(len(self.fulldf))
+
+        for start, end in zip(self.location_list, wclist):
+            intermidiate = set(self.fulldf.loc[start:end]['type']).difference(set(["HEADING"]))
+            intermidiate.union(*self.headingdf.loc[start:end]['characters'])
+            locationchar.append(intermidiate)
+            for character in characterprescene:
+                if character in intermidiate:
+                    characterprescene[character].append(1)
+                else:
+                    characterprescene[character].append(0)
+        # locationdf['character'] = locationchar
+        # locationdf
+
+        self.locationdf = pd.concat([locationdf, pd.DataFrame(characterprescene, index=self.location_list)], axis=1)
+        # print(self.locationdf)
+
+        self.locationcocurence = self.locationdf.copy()
+        # self.locationcocurence.set_index('location', inplace=True)
+        self.locationcocurence.drop(
+            columns=['heading', 'terior', 'subheading', 'ToD', 'sentence_index', 'type', 'text'],
+            inplace=True)
     def get_filename(self):
         return self.filename
     def get_fulldf(self):

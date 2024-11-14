@@ -36,8 +36,8 @@ class DirectedGraph(Evaluator):
 
     def creategraph(self):
 
-        fig, ax = plt.subplots(figsize=(10, 5))
-
+        fig, ax = plt.subplots()
+        fig.tight_layout()
         for character in self.scraper.get_characterdict():
             if np.nan in  self.char_forced_directed[character]["x_val"]:
                 plt.plot(self.char_forced_directed[character]["x_val"], self.char_forced_directed[character]["y_val"], marker='o',
@@ -65,5 +65,5 @@ class DirectedGraph(Evaluator):
         ax.set_ylabel('Scene')
 
 
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-DirectedGraph.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-DirectedGraph.png")}',bbox_inches='tight')
         plt.close()

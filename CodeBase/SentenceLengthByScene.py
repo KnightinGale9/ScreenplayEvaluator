@@ -18,14 +18,14 @@ class SentenceLengthByScene(Evaluator):
     def graph_over_time(self):
         keys = [i for i in range(len(self.differences))]
         values = self.differences
-        fig, ax = plt.subplots(figsize=(10, 5))
+        fig, ax = plt.subplots()
 
         plt.bar(keys, values)
         plt.title("Scene By Sentence Length Over Time")
 
         ax.set_xlabel('Scene Index')
         ax.set_ylabel('Sentence Count')
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-SceneBySentenceLengthOverTime.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-SceneBySentenceLengthOverTime.png")}',bbox_inches='tight')
         plt.close()
     def graph_over_length(self):
         self.scenelenlcolat = {}
@@ -37,13 +37,13 @@ class SentenceLengthByScene(Evaluator):
         sorted_sentence = list(self.scenelenlcolat.items())
         sorted_sentence.sort()
         keys, values = zip(*sorted_sentence)
-        fig, ax = plt.subplots(figsize=(10, 5))
+        fig, ax = plt.subplots()
 
         plt.bar(keys, values )
         plt.title("Scene By Sentence Length Index")
         ax.set_xlabel('Scene Length')
         ax.set_ylabel('Count')
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-SceneBySentenceLengthIndex.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-SceneBySentenceLengthIndex.png")}',bbox_inches='tight')
         plt.close()
 
     def get_json_data(self):

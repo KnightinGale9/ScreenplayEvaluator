@@ -4,7 +4,7 @@ import numpy as np
 from CodeBase.GraphParent import GraphParent
 class IncreasingGraph(GraphParent):
     def increasing_graph(self):
-        fig, ax = plt.subplots(figsize=(10, 5))
+        fig, ax = plt.subplots()
 
         for character in self.scraper.get_characterdict():
             xpoints = np.append([0], self.speaking[character])
@@ -22,7 +22,7 @@ class IncreasingGraph(GraphParent):
         ax.set_xlabel('Sentence Index')
         ax.set_ylabel('Character Presence ')
         # plt.legend(ncol=3)
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-increasingGraph.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-increasingGraph.png")}',bbox_inches='tight')
         plt.close()
     def get_json_data(self):
         return self.speaking

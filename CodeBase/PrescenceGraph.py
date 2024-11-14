@@ -30,13 +30,9 @@ class PrescenceGraph(GraphParent):
 
         ax.set_ylabel('Sentence Index')
         ax.set_title('Presence Graph')
-        # ax
-        # ax.minorticks_on()
-        # ax.grid(False)
-        # # Adding legend manually
-        plt.xticks(rotation=90)
-        # plt.show()
+
+        plt.xticks(rotation=90,fontsize=8)
         fig.tight_layout()
 
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-prescenceGraph.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-prescenceGraph.png")}',bbox_inches='tight')
         plt.close()

@@ -6,10 +6,11 @@ from transformers import pipeline
 from CodeBase.Evaluator import Evaluator
 nlp = spacy.load("en_core_web_sm") #fast but less accurate
 
+#https://huggingface.co/distilbert/distilbert-base-uncased-finetuned-sst-2-english#uses
 
 class SentimentAnalysis(Evaluator):
     def create_sentiment_list(self):
-        sentiment_pipeline = pipeline("sentiment-analysis")
+        sentiment_pipeline = pipeline("sentiment-analysis",model="distilbert-base-uncased-finetuned-sst-2-english")
 
         self.sentences = []
         self.sentiemnt = []
@@ -47,12 +48,13 @@ class SentimentAnalysis(Evaluator):
         bars_negative = ax.scatter(negative.index, negative['sentiment_score'], color='red', label='Negative')
 
         # Add labels and title
+        plt.legend()
         ax.set_xlabel('Sentence Index ')
         ax.set_ylabel('Sentiment Score')
         ax.set_title('Sentiment Analysis')
         plt.title("Sentiment score Over Sentence Index")
 
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension("-SentimentAnlysis.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension("-SentimentAnlysis.png")}',bbox_inches='tight')
         plt.close()
 
     def get_json_data(self):

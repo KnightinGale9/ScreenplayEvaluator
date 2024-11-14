@@ -3,6 +3,7 @@ import traceback
 from pathlib import Path
 import regex as re
 
+from CodeBase.CharacterLegend import CharacterLegend
 from CodeBase.HeapsLaw import HeapsLaw
 from CodeBase.SentenceLengthByScene import SentenceLengthByScene
 from CodeBase.WordLengthByScene import WordLengthByScene
@@ -17,6 +18,7 @@ from CodeBase.SentimentAnalysis import SentimentAnalysis
 from CodeBase.DirectedGraph import DirectedGraph
 from CodeBase.CordGraph import CordGraph
 from CodeBase.SVO import SVO
+from CodeBase.StandfordCoreNLPEvaluator import  StandfordCoreNLPEvaluator
 
 skipped_screenplays=[]
 
@@ -26,12 +28,12 @@ for file_path in directory_path.glob("*.json"):
     with file_path.open('r') as file:
         content = file.read()
         print(file)
-        skipfile = set(["15minutes.json","2012.json"])
-        if file_path.name in skipfile:
+        skipfile = set(["indianajonesandtheraidersofthelostark.json"])
+        if file_path.name not in skipfile:
             continue
         dir_name=re.sub('\.\w+$','',file_path.name)
-        mkdir=f"../output/Action/{dir_name}"
-        mkdir_path = Path(f"../output/Action/{dir_name}")
+        mkdir=f"../output/ScreenplayfromChatGPT/{dir_name}"
+        mkdir_path = Path(mkdir)
         mkdir_path.mkdir(parents=True,exist_ok=True)
 
 
@@ -41,65 +43,83 @@ for file_path in directory_path.glob("*.json"):
         try:
             screenplay_main.screenplay_scrape()
             screenplay_main.dataframe_creation()
+            print("Evaluators that have finished", end=": ")
 
             screenplay_data={}
             screenplay_data["screenplay"],screenplay_data["characterdict"],screenplay_data["location_list"]=screenplay_main.get_json_data()
+
+            charlist=CharacterLegend(screenplay_main)
+            charlist.print_character_list()
+            print("Character Legend", end=", ")
 
             increasinggraph = IncreasingGraph(screenplay_main)
             increasinggraph.combined_lines()
             increasinggraph.increasing_graph()
             screenplay_data["speaking"]=increasinggraph.get_json_data()
+            print("Increasing Graph", end=", ")
 
             prescencegraph = PrescenceGraph(screenplay_main)
             prescencegraph.combined_lines()
             prescencegraph.prescence_graph()
+            print("Presence Graph", end=", ")
 
             sentlength = SentenceLengthByScene(screenplay_main)
             sentlength.create_scene_length()
             sentlength.graph_over_time()
             sentlength.graph_over_length()
             screenplay_data["SceneBySentence"],screenplay_data["SceneLengthBySentence"]=sentlength.get_json_data()
+            print("Sentence Length", end=", ")
 
             wordlength = WordLengthByScene(screenplay_main)
             wordlength.create_scene_length()
             wordlength.graph_over_time()
             wordlength.graph_over_length()
             screenplay_data["SceneByWord"],screenplay_data["SceneLengthByWord"]=wordlength.get_json_data()
-
-
-            sentimentanalysis = SentimentAnalysis(screenplay_main)
-            sentimentanalysis.create_sentiment_list()
-            sentimentanalysis.create_graph()
-            screenplay_data["sentiment"]=sentimentanalysis.get_json_data()
+            print("Word Length", end=", ")
 
             heapslaw = HeapsLaw(screenplay_main)
             heapslaw.heaps_law()
             heapslaw.plot_vocab_growth()
             screenplay_data["vocabGroth"]=heapslaw.get_json_data()
-
-            sentencecomplexity = SentenceComplexity(screenplay_main)
-            sentencecomplexity.sentence_complexity_calculations()
-            sentencecomplexity.sentence_length_graph()
-            sentencecomplexity.sentence_length_indexing()
-            sentencecomplexity.yngves_and_frazier_mean()
-            screenplay_data["sentencecomplexity"]=sentencecomplexity.get_json_data()
+            print("Heaps Law", end=", ")
 
             partofspeech = PartOfSpeech(screenplay_main)
             partofspeech.pos_aggregate()
             partofspeech.part_of_speech_investigation()
             partofspeech.tag_investigation()
             screenplay_data["partofspeech"] = partofspeech.get_json_data()
+            print("Part of Speech", end=", ")
 
             dGraph = DirectedGraph(screenplay_main)
             dGraph.create_directed_graph()
             dGraph.creategraph()
+            print("Directed Graph", end=", ")
 
             CGraph = CordGraph(screenplay_main)
             CGraph.create_data()
             CGraph.create_graph()
+            print("Cord Graph", end=", ")
 
-            svvo = SVO(screenplay_main)
+            sentimentanalysis = SentimentAnalysis(screenplay_main)
+            sentimentanalysis.create_sentiment_list()
+            sentimentanalysis.create_graph()
+            screenplay_data["sentiment"] = sentimentanalysis.get_json_data()
+            print("Sentiment Analysis", end=", ")
+
+            coreNLPSent=StandfordCoreNLPEvaluator(screenplay_main)
+            tree= coreNLPSent.create_trees()
+
+            sentencecomplexity = SentenceComplexity(screenplay_main,tree=tree)
+            sentencecomplexity.sentence_complexity_calculations()
+            sentencecomplexity.sentence_length_graph()
+            sentencecomplexity.sentence_length_indexing()
+            sentencecomplexity.yngves_and_frazier_mean()
+            screenplay_data["sentencecomplexity"] = sentencecomplexity.get_json_data()
+            print("Sentence Complexity", end=", ")
+
+            svvo = SVO(screenplay_main,tree=tree)
             svvo.create_data()
+            print("SVO")
 
         except Exception:
             print(file_path.name)

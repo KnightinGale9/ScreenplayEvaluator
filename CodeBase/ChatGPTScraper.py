@@ -34,7 +34,9 @@ class ChatGPTScraper(Scraper):
         pattern2 = r"(INT\.|EXT\.|I\/E\.)\s+([A-Za-z\s]+?)\s+-\s+([A-Za-z\s]+)?\s+-\s+([A-Za-z]*)\s*"
         screen = self.data.split("\n\n")
 
-        for i, text in enumerate(screen):
+        for text in screen:
+            i = len(self.screenplay['type'])
+
             # print(i,text)
             # if "FADE" in text:
             #     print(text)
@@ -78,61 +80,62 @@ class ChatGPTScraper(Scraper):
             sent_idx += self.count_sentences(text)
             self.screenplay["sentence_index"].append(sent_idx)
 
-    def dataframe_creation(self,character_removal=[]):
-
-        self.fulldf = pd.DataFrame(self.screenplay)
-        self.fulldf.drop(self.fulldf.loc[self.fulldf['text'] == ""].index, inplace=True)
-        character_set = set(self.fulldf.loc[self.fulldf['type'] != "HEADING"]['type'])
-        sorted_character = list(character_set)
-        sorted_character.sort()
-        sorted_character = [k for k in sorted_character]
-        palette = sns.color_palette(cc.glasbey, n_colors=len(character_set))
-        # character dict
-        self.characterdict = dict(zip(sorted_character, palette))
-        print(self.fulldf)
-        self.dialoguedf = self.fulldf.loc[self.fulldf['type'] != "HEADING"]
-
-        self.headingdf = self.fulldf.loc[self.fulldf['type'] == "HEADING"]
-        heading_character = []
-
-        characterset = set(self.characterdict.keys())
-        for idx, row in self.headingdf.iterrows():
-            # print(idx,row['text'].upper())
-            nlpset = set()
-            # nlpset.add()
-            # print(row['text'].upper())
-            for token in nlp(row['text'].upper()):
-                nlpset.add(token.lemma_.upper())
-            heading_character.append(characterset.intersection(nlpset).copy())
-            # if idx == 80:
-            #     print(heading_character[-1], nlpset)
-        self.headingdf = self.headingdf.assign(characters=heading_character)
-        # location df
-        self.locationdf = self.fulldf[self.fulldf.index.isin(self.location_list)].copy()
-
-        # locationdf.loc[:, locationdf.columns != 'location']
-        locationchar = []
-        characterprescene = {key: [] for key in self.characterdict.keys()}
-        for loca in self.locationdf['heading']:
-            intermidiate = set(self.fulldf.loc[self.fulldf['heading'] == loca]['type'])
-            intermidiate.union(*self.headingdf.loc[self.headingdf['heading'] == loca]['heading'])
-            locationchar.append(intermidiate)
-            for character in characterprescene:
-                if character in intermidiate:
-                    characterprescene[character].append(1)
-                else:
-                    characterprescene[character].append(0)
-        self.locationdf['character'] = locationchar
-        alpha_character = list(self.characterdict.keys())
-        alpha_character.sort()
-        for character in alpha_character:
-            self.locationdf[character] = characterprescene[character]
-
-        self.locationcocurence = self.locationdf.copy()
-        # self.locationcocurence.set_index('location', inplace=True)
-        self.locationcocurence.drop(
-            columns=['heading', 'terior', 'subheading', 'ToD', 'sentence_index', 'type', 'text', 'character'],
-            inplace=True)
+    # def dataframe_creation(self,character_removal=[]):
+    #
+    #     self.fulldf = pd.DataFrame(self.screenplay)
+    #     self.fulldf.drop(self.fulldf.loc[self.fulldf['text'] == ""].index, inplace=True)
+    #     character_set = set(self.fulldf.loc[self.fulldf['type'] != "HEADING"]['type'])
+    #     sorted_character = list(character_set)
+    #     sorted_character.sort()
+    #     sorted_character = [k for k in sorted_character]
+    #     palette = sns.color_palette(cc.glasbey, n_colors=len(character_set))
+    #     # character dict
+    #     self.characterdict = dict(zip(sorted_character, palette))
+    #     print(self.fulldf)
+    #     self.dialoguedf = self.fulldf.loc[self.fulldf['type'] != "HEADING"]
+    #
+    #     self.headingdf = self.fulldf.loc[self.fulldf['type'] == "HEADING"]
+    #     heading_character = []
+    #
+    #     characterset = set(self.characterdict.keys())
+    #     for idx, row in self.headingdf.iterrows():
+    #         # print(idx,row['text'].upper())
+    #         nlpset = set()
+    #         # nlpset.add()
+    #         # print(row['text'].upper())
+    #         for token in nlp(row['text'].upper()):
+    #             nlpset.add(token.lemma_.upper())
+    #         heading_character.append(characterset.intersection(nlpset).copy())
+    #         # if idx == 80:
+    #         #     print(heading_character[-1], nlpset)
+    #     self.headingdf = self.headingdf.assign(characters=heading_character)
+    #     # location df
+    #     self.locationdf = self.fulldf[self.fulldf.index.isin(self.location_list)].copy()
+    #
+    #     # locationdf.loc[:, locationdf.columns != 'location']
+    #     locationchar = []
+    #     characterprescene = {key: [] for key in self.characterdict.keys()}
+    #     for loca in self.locationdf['heading']:
+    #         intermidiate = set(self.fulldf.loc[self.fulldf['heading'] == loca]['type'])
+    #         intermidiate.union(*self.headingdf.loc[self.headingdf['heading'] == loca]['heading'])
+    #         locationchar.append(intermidiate)
+    #         for character in characterprescene:
+    #             if character in intermidiate:
+    #                 characterprescene[character].append(1)
+    #             else:
+    #                 characterprescene[character].append(0)
+    #     self.locationdf['character'] = locationchar
+    #     alpha_character = list(self.characterdict.keys())
+    #     alpha_character.sort()
+    #     self.locationdf
+    #     for character in alpha_character:
+    #         self.locationdf[character] = characterprescene[character]
+    #
+    #     self.locationcocurence = self.locationdf.copy()
+    #     # self.locationcocurence.set_index('location', inplace=True)
+    #     self.locationcocurence.drop(
+    #         columns=['heading', 'terior', 'subheading', 'ToD', 'sentence_index', 'type', 'text', 'character'],
+    #         inplace=True)
 
     def count_sentences(self,text):
         # Use regular expression to find sentences
@@ -140,4 +143,7 @@ class ChatGPTScraper(Scraper):
 
         # Filter out empty strings and count
         return len([s for s in sentences if s.strip()])
+
+    def get_json_data(self):
+        return self.screenplay,self.characterdict,self.location_list
 

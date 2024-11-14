@@ -88,10 +88,11 @@ class SentenceComplexity(GraphParent):
                 val += self.calc_frazier(child, score, my_lab)
             return val
 
-    def __init__(self,scraper):
+    def __init__(self,scraper,tree=None):
         super().__init__(scraper)
         self.sentences=[]
         dataframe = self.scraper.get_fulldf()
+        self.premade_tree=tree
         for data in dataframe['text']:
             #maybe remove the (description lines)
             sent = nltk.sent_tokenize(data)
@@ -107,13 +108,16 @@ class SentenceComplexity(GraphParent):
         self.wordss = []
 
         parser = CoreNLPParser(url='http://localhost:9000')
-        for s in self.sentences:
+        for i,s in enumerate(self.sentences):
             # if not s.strip(): continue
-            try:
-                t = list(parser.raw_parse(s))[0]
-            except Exception as ex:
-                print(type(ex),"skipping", s)
-                continue
+            if self.premade_tree is None:
+                try:
+                    t = list(parser.raw_parse(s))[0]
+                except Exception as ex:
+                    print(type(ex),"skipping", s)
+                    continue
+            else:
+                t= self.premade_tree[i]
             words = self.calc_words(t)
             words_tot += words
             sents += 1
@@ -163,7 +167,7 @@ class SentenceComplexity(GraphParent):
         plt.title("Sentence Length Count")
         ax.set_xlabel("Sentence Length")
         ax.set_ylabel("Count")
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-sentence_length_indexing.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-sentence_length_indexing.png")}',bbox_inches='tight')
         plt.close()
     def sentence_length_graph(self):
         fig, ax = plt.subplots()
@@ -181,10 +185,10 @@ class SentenceComplexity(GraphParent):
         ax.set_ylabel("Sentence Length")
         ax.set_xlabel("Sentence Index")
         plt.legend()
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-sentence_length_graph.png")}')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-sentence_length_graph.png")}',bbox_inches='tight')
         plt.close()
     def yngves_and_frazier_mean(self):
-        plt.rcParams['font.size'] = 18  # Adjust size as needed
+        # plt.rcParams['font.size'] = 16  # Adjust size as needed
 
         fig, ax = plt.subplots(figsize=(20, 10))
 
@@ -203,7 +207,6 @@ class SentenceComplexity(GraphParent):
         plt.title("Yngves and Frazier mean score")
         ax.set_xlabel('Sentence Index')
         ax.set_ylabel('Complexity Score')
-        plt.legend()
-        # ax.legend(fontsize=16)  # Adjust the font size as needed
+        ax.legend(fontsize=16)  # Adjust the font size as needed
         plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-yngves_and_frazier_mean.png")}')
         plt.close()
