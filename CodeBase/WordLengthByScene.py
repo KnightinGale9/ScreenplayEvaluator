@@ -28,7 +28,7 @@ class WordLengthByScene(Evaluator):
         fig, ax = plt.subplots(figsize=(10, 5))
 
         plt.bar(keys, values)
-        plt.title("Scene Length Over Time")
+        plt.title("Scene By Word Length Over Time")
 
         ax.set_xlabel('Scene Index')
         ax.set_ylabel('Sentence Count')
@@ -47,7 +47,7 @@ class WordLengthByScene(Evaluator):
         fig, ax = plt.subplots(figsize=(10, 5))
 
         plt.bar(keys, values )
-        plt.title("Scene Length Index")
+        plt.title("Scene By Word Length Index")
         ax.set_xlabel('Scene Length')
         ax.set_ylabel('Count')
         plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-SceneByWordLengthIndex.png")}')

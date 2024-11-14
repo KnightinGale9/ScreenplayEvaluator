@@ -57,15 +57,34 @@ class ScreenPyScrapper(Scraper):
                 sent_idx += len(split_text)
                 self.screenplay['sentence_index'].append(sent_idx)
                 self.screenplay['text'].append(process_text)
-                self.screenplay['terior'].append(location['terior'])
-                self.screenplay['heading'].append(str(location['location'][0]))
-                if len(location['location']) > 1:
-                    self.screenplay['subheading'].append(str(location['location'][1:]))
-                else:
+                try:
+                    if location['terior'] is not None:
+                        self.screenplay['terior'].append(location['terior'])
+                    else:
+                        self.screenplay['terior'].append("")
+                except KeyError:
+                    self.screenplay['terior'].append("")
+                try:
+                    if location['location'] is not None:
+                        self.screenplay['heading'].append(str(location['location'][0]))
+                    else:
+                        self.screenplay['heading'].append("")
+                except KeyError:
+                    self.screenplay['heading'].append("")
+                try:
+                    if location['location'] is not None and len(location['location']) > 1:
+                        self.screenplay['subheading'].append(str(location['location'][1:]))
+                    else:
+                        self.screenplay['subheading'].append("")
+                except KeyError:
                     self.screenplay['subheading'].append("")
-
-                self.screenplay['ToD'].append(location['ToD'])
-
+                try:
+                    if location['ToD'] is not None:
+                        self.screenplay['ToD'].append(location['ToD'])
+                    else:
+                        self.screenplay['ToD'].append("")
+                except KeyError:
+                    self.screenplay['ToD'].append("")
                 # screenplay['text'].append(nlp(screen['text']))
                 i += 1
     def dataframe_creation(self):
@@ -86,6 +105,8 @@ class ScreenPyScrapper(Scraper):
         heading_character = []
 
         characterset = set(self.characterdict.keys())
+
+
         for idx, row in self.headingdf.iterrows():
             # print(idx,row['text'].upper())
             nlpset = set()
