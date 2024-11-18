@@ -63,7 +63,7 @@ class Scraper(object):
                     characterprescene[character].append(1)
                 else:
                     characterprescene[character].append(0)
-        # locationdf['character'] = locationchar
+        locationdf['character'] = locationchar
         # locationdf
 
         self.locationdf = pd.concat([locationdf, pd.DataFrame(characterprescene, index=self.location_list)], axis=1)
@@ -72,7 +72,7 @@ class Scraper(object):
         self.locationcocurence = self.locationdf.copy()
         # self.locationcocurence.set_index('location', inplace=True)
         self.locationcocurence.drop(
-            columns=['heading', 'terior', 'subheading', 'ToD', 'sentence_index', 'type', 'text'],
+            columns=['heading', 'character','terior', 'subheading', 'ToD', 'sentence_index', 'type', 'text'],
             inplace=True)
     def get_filename(self):
         return self.filename
@@ -90,5 +90,7 @@ class Scraper(object):
         return self.locationcocurence
     def get_locationlist(self):
         return self.location_list
+    def get_sentences(self):
+        return self.sentences
     def get_output_dir(self):
         return self.dir_path

@@ -11,12 +11,16 @@ class PrescenceGraph(GraphParent):
         events = []
         color = []
         for character in self.sorted_character:
-            char.append(character)
+            cc= character.split()
+            if len(cc)>3:
+                char.append(f'{cc[0]} {cc[1]}')
+            else:
+                char.append(character)
             events.append(self.speaking[character])
             color.append(self.scraper.get_characterdict()[character])
 
         # Create figure and axis
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(20, 10))
         # Plotting the event plot
         ax.eventplot(events, orientation='vertical', lineoffsets=range(0, len(self.speaking)), linelengths=0.7,
                      colors=color)

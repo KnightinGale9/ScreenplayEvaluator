@@ -18,7 +18,7 @@ class SentenceLengthByScene(Evaluator):
     def graph_over_time(self):
         keys = [i for i in range(len(self.differences))]
         values = self.differences
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(20, 10))
 
         plt.bar(keys, values)
         plt.title("Scene By Sentence Length Over Time")
@@ -37,7 +37,7 @@ class SentenceLengthByScene(Evaluator):
         sorted_sentence = list(self.scenelenlcolat.items())
         sorted_sentence.sort()
         keys, values = zip(*sorted_sentence)
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(20, 10))
 
         plt.bar(keys, values )
         plt.title("Scene By Sentence Length Index")

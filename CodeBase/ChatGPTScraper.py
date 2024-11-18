@@ -1,4 +1,6 @@
 import json
+
+import nltk
 import pandas as pd
 import spacy
 import seaborn as sns
@@ -14,7 +16,7 @@ class ChatGPTScraper(Scraper):
     def __init__(self,dirpath,file_path):
         self.dir_path=dirpath
         try:
-            with open(file_path, 'r') as file:
+            with open(file_path, 'r',encoding="utf8") as file:
                 self.data = file.read()
             self.filename=file_path
             match = re.search(r"\/(.*)$", file_path)
@@ -23,15 +25,18 @@ class ChatGPTScraper(Scraper):
                 print(self.filename)
         except FileNotFoundError:
             print(file_path+ " was not found.")
+
     def screenplay_scrape(self):
         self.screenplay = {'sentence_index': [], 'type': [], 'terior': [], 'heading': [], 'subheading': [], 'ToD': [],
                       'text': []}
         self.location_list = []
+        self.sentences=[]
         sent_idx = 0
         location = ""
+
         story_combine = ""
-        pattern1 = r"(INT\.|EXT\.|I\/E\.|INT./EXT.)\s+(.*)\s+-\s+(.*)\s*"
-        pattern2 = r"(INT\.|EXT\.|I\/E\.)\s+([A-Za-z\s]+?)\s+-\s+([A-Za-z\s]+)?\s+-\s+([A-Za-z]*)\s*"
+        pattern1 = r".*(INT\.|EXT\.|I\/E\.|INT\.\/EXT\.)\s+(.*)\s+[-–]\s+(.*)\s*.*"
+        pattern2 = r".*(INT\.|EXT\.|I\/E\.|INT\.\/EXT\.)\s+(.*)\s+[-–]\s+(.*)\s+[-–]\s+(.*)\s*.*"
         screen = self.data.split("\n\n")
 
         for text in screen:
@@ -42,13 +47,15 @@ class ChatGPTScraper(Scraper):
             #     print(text)
             #     continue
             if "EXT." in text or "INT." in text:
-                location = text
-                print(i, text)
+                # if text != location:
+                location = text.replace("\n","").strip()
+                # print(i, text)
                 self.location_list.append(i)
                 continue
             character = text.split("\n")
             if character[0].isupper():
-                self.screenplay["type"].append(character[0])
+                character_name = character[0].split("(")
+                self.screenplay["type"].append(character_name[0])
                 temp = ""
                 for tt in character[1:]:
                     temp += tt
@@ -75,11 +82,14 @@ class ChatGPTScraper(Scraper):
                 # location_list.append(i)
             else:
                 print(location)
-                print("error", text)
+                print("error")
             # screenplay["location"].append(location)
-            sent_idx += self.count_sentences(text)
+            sent = nltk.sent_tokenize(text)
+            sent_idx += len(sent)
+            self.sentences.extend(sent)
             self.screenplay["sentence_index"].append(sent_idx)
-
+        for ss in self.screenplay:
+            print(len(self.screenplay[ss]))
     # def dataframe_creation(self,character_removal=[]):
     #
     #     self.fulldf = pd.DataFrame(self.screenplay)

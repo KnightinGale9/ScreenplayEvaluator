@@ -132,7 +132,8 @@ class PartOfSpeech(Evaluator):
     def gini(self,pos):
         pos_list = list(self.pos_collat[pos.upper()].items())
         pos_list.sort(key=lambda x: x[1], reverse=True)
-
+        if len(pos_list)==0:
+            return 0
         keys, values = zip(*pos_list)
         array = np.sort(values)
         """Calculate the Gini coefficient of a numpy array."""

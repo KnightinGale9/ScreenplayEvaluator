@@ -34,18 +34,18 @@ class SentimentAnalysis(Evaluator):
         # Plot the bar graph
         sentiment = pd.DataFrame({'sentences': self.sentences, 'sentiment_score': values})
         # print(sentiment)
-        fig, ax = plt.subplots(figsize=(20, 5))
+        fig, ax = plt.subplots(figsize=(20, 10))
 
         # Separate positive and negative sentiment scores
-        positive = sentiment[sentiment['sentiment_score'] >= 0]
-        negative = sentiment[sentiment['sentiment_score'] < 0]
+        self.positive = sentiment[sentiment['sentiment_score'] >= 0]
+        self.negative = sentiment[sentiment['sentiment_score'] < 0]
 
         # Plot positive sentiment scores as green bars
-        bars_positive = ax.scatter(positive.index, positive['sentiment_score'], color='green', label='Positive')
+        bars_positive = ax.scatter(self.positive.index, self.positive['sentiment_score'], color='green', label='Positive')
 
 
         # Plot negative sentiment scores as red bars
-        bars_negative = ax.scatter(negative.index, negative['sentiment_score'], color='red', label='Negative')
+        bars_negative = ax.scatter(self.negative.index, self.negative['sentiment_score'], color='red', label='Negative')
 
         # Add labels and title
         plt.legend()
@@ -58,4 +58,4 @@ class SentimentAnalysis(Evaluator):
         plt.close()
 
     def get_json_data(self):
-        return self.sentiemnt
+        return {"Pos_sentiment":len(self.positive),"Neg_sentiment":len(self.negative)},self.sentiemnt

@@ -4,7 +4,7 @@ import numpy as np
 from CodeBase.GraphParent import GraphParent
 class IncreasingGraph(GraphParent):
     def increasing_graph(self):
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(20, 10))
 
         for character in self.scraper.get_characterdict():
             xpoints = np.append([0], self.speaking[character])

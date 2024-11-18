@@ -90,13 +90,9 @@ class SentenceComplexity(GraphParent):
 
     def __init__(self,scraper,tree=None):
         super().__init__(scraper)
-        self.sentences=[]
-        dataframe = self.scraper.get_fulldf()
+        self.sentences=self.scraper.get_sentences()
+
         self.premade_tree=tree
-        for data in dataframe['text']:
-            #maybe remove the (description lines)
-            sent = nltk.sent_tokenize(data)
-            self.sentences.extend(sent)
     def sentence_complexity_calculations(self):
         sents = 0
         words_tot = 0
@@ -146,7 +142,7 @@ class SentenceComplexity(GraphParent):
             self.sentence_data_df[i]=data[i]
         self.sentence_data_df["yngves_mean"]=self.sentence_data_df['yngves']/self.sentence_data_df['words']
         self.sentence_data_df["fraziers_mean"] = self.sentence_data_df['fraziers'] / self.sentence_data_df['words']
-        # print(self.sentence_data_df)
+        print(sents,self.sentence_data_df)
     def get_json_data(self):
         return {"yngves": self.yngves, "fraziers": self.fraziers, "words": self.wordss,
                    "averages": {"yngve": self.yngve_avg, "frazier": self.frazier_avg, "words": self.words_avg}}
@@ -161,16 +157,16 @@ class SentenceComplexity(GraphParent):
         sorted_sentence = list(sentence_length.items())
         sorted_sentence.sort()
         keys, values = zip(*sorted_sentence)
-        fig, ax = plt.subplots(figsize=(10, 5))
+        fig, ax = plt.subplots(figsize=(20, 10))
 
         plt.bar(keys, values)
         plt.title("Sentence Length Count")
         ax.set_xlabel("Sentence Length")
         ax.set_ylabel("Count")
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-sentence_length_indexing.png")}',bbox_inches='tight')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-SentenceWordCount.png")}',bbox_inches='tight')
         plt.close()
     def sentence_length_graph(self):
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(20, 10))
 
         keys, values = self.sentence_data_df.index, self.sentence_data_df['words']
         spl = make_interp_spline(keys, values, k=3)  # k=3 indicates a cubic spline
@@ -185,7 +181,7 @@ class SentenceComplexity(GraphParent):
         ax.set_ylabel("Sentence Length")
         ax.set_xlabel("Sentence Index")
         plt.legend()
-        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-sentence_length_graph.png")}',bbox_inches='tight')
+        plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-SentenceWordCountOverTime.png")}',bbox_inches='tight')
         plt.close()
     def yngves_and_frazier_mean(self):
         # plt.rcParams['font.size'] = 16  # Adjust size as needed
