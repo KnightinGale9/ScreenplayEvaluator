@@ -14,15 +14,10 @@ class SentimentAnalysis(Evaluator):
 
         self.sentences = []
         self.sentiemnt = []
-        for index, row in self.scraper.get_fulldf().iterrows():
-            text = nlp(row['text'])
-            span = list(text.sents)
-            for txt in span:
-                txt = txt
-                if txt.text == "":
-                    continue
-                self.sentences.append(txt)
-                self.sentiemnt.append(sentiment_pipeline(txt.text))
+
+        for text in self.scraper.get_sentences():
+            self.sentences.append(text)
+            self.sentiemnt.append(sentiment_pipeline(text))
 
     def create_graph(self):
         values = []

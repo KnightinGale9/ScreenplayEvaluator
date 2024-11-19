@@ -84,13 +84,8 @@ class SVO(Evaluator):
 
     def __init__(self,scraper,tree=None):
         super().__init__(scraper)
-        self.sentences=[]
+        self.sentences=self.scraper.get_sentences()
         self.premade_tree=tree
-        dataframe = self.scraper.get_fulldf()
-        for data in dataframe['text']:
-            #maybe remove the (description lines)
-            sent = nltk.sent_tokenize(data)
-            self.sentences.extend(sent)
     def calculation(self,sentence):
 
         # print(find_subject(sentence))

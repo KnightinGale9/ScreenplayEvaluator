@@ -142,7 +142,7 @@ class SentenceComplexity(GraphParent):
             self.sentence_data_df[i]=data[i]
         self.sentence_data_df["yngves_mean"]=self.sentence_data_df['yngves']/self.sentence_data_df['words']
         self.sentence_data_df["fraziers_mean"] = self.sentence_data_df['fraziers'] / self.sentence_data_df['words']
-        print(sents,self.sentence_data_df)
+        # print(sents,self.sentence_data_df)
     def get_json_data(self):
         return {"yngves": self.yngves, "fraziers": self.fraziers, "words": self.wordss,
                    "averages": {"yngve": self.yngve_avg, "frazier": self.frazier_avg, "words": self.words_avg}}
@@ -160,8 +160,8 @@ class SentenceComplexity(GraphParent):
         fig, ax = plt.subplots(figsize=(20, 10))
 
         plt.bar(keys, values)
-        plt.title("Sentence Length Count")
-        ax.set_xlabel("Sentence Length")
+        plt.title("Sentence Length by Word Count")
+        ax.set_xlabel("Sentence Length by Word")
         ax.set_ylabel("Count")
         plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-SentenceWordCount.png")}',bbox_inches='tight')
         plt.close()
@@ -177,8 +177,8 @@ class SentenceComplexity(GraphParent):
 
         self.x_axis_alt_bands()
         plt.xticks(list(range(0,list(self.scraper.get_locationdf()['sentence_index'])[-1], 500)))
-        plt.title("Sentence Length Index")
-        ax.set_ylabel("Sentence Length")
+        plt.title("Sentence Length by Word Index")
+        ax.set_ylabel("Sentence Length by Word")
         ax.set_xlabel("Sentence Index")
         plt.legend()
         plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-SentenceWordCountOverTime.png")}',bbox_inches='tight')

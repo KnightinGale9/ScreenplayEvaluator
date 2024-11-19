@@ -43,15 +43,19 @@ class ChatGPTScraper(Scraper):
             i = len(self.screenplay['type'])
 
             # print(i,text)
-            # if "FADE" in text:
-            #     print(text)
-            #     continue
             if "EXT." in text or "INT." in text:
                 # if text != location:
                 location = text.replace("\n","").strip()
                 # print(i, text)
                 self.location_list.append(i)
                 continue
+            trans=r"^\b(?:FADE IN|FADE OUT|DISSOLVE TO|CUT TO|SMASH CUT|IRIS IN AND IRIS OUT|JUMP CUT|FLASHBACK|TIME CUT)\b.(.*)"
+            if re.match(trans,text):
+                mat = re.match(trans, text)
+                print(text)
+                if mat.group(1) is None:
+                    continue
+
             character = text.split("\n")
             if character[0].isupper():
                 character_name = character[0].split("(")
@@ -59,11 +63,21 @@ class ChatGPTScraper(Scraper):
                 temp = ""
                 for tt in character[1:]:
                     temp += tt
-                self.screenplay["text"].append(temp)
+                pharentetical = r'(\(.*?\))?\s*(.*)'
+                mat = re.match(pharentetical, temp)
+                self.screenplay["text"].append(mat.group(2))
+                sent = nltk.sent_tokenize(mat.group(2))
+                sent_idx += len(sent)
+                self.sentences.extend(sent)
+                self.screenplay["sentence_index"].append(sent_idx)
 
             else:
                 self.screenplay["type"].append("HEADING")
                 self.screenplay["text"].append(text)
+                sent = nltk.sent_tokenize(text)
+                sent_idx += len(sent)
+                self.sentences.extend(sent)
+                self.screenplay["sentence_index"].append(sent_idx)
 
             if re.match(pattern2, location):
                 mat = re.match(pattern2, location)
@@ -84,10 +98,10 @@ class ChatGPTScraper(Scraper):
                 print(location)
                 print("error")
             # screenplay["location"].append(location)
-            sent = nltk.sent_tokenize(text)
-            sent_idx += len(sent)
-            self.sentences.extend(sent)
-            self.screenplay["sentence_index"].append(sent_idx)
+            # sent = nltk.sent_tokenize(text)
+            # sent_idx += len(sent)
+            # self.sentences.extend(sent)
+            # self.screenplay["sentence_index"].append(sent_idx)
         for ss in self.screenplay:
             print(len(self.screenplay[ss]))
     # def dataframe_creation(self,character_removal=[]):

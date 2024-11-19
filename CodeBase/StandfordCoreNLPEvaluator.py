@@ -22,12 +22,7 @@ parser = CoreNLPParser(url='http://localhost:9000')
 class StandfordCoreNLPEvaluator(Evaluator):
     def __init__(self, scraper):
         super().__init__(scraper)
-        self.sentences = []
-        dataframe = self.scraper.get_fulldf()
-        for data in dataframe['text']:
-            # maybe remove the (description lines)
-            sent = nltk.sent_tokenize(data)
-            self.sentences.extend(sent)
+        self.sentences = self.scraper.get_sentences()
         self.sentence_tree=[]
     def create_trees(self):
         for s in self.sentences:

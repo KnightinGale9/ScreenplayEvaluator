@@ -1,4 +1,6 @@
 import json
+
+import nltk
 import pandas as pd
 import spacy
 import seaborn as sns
@@ -28,6 +30,7 @@ class ScreenPyScrapper(Scraper):
                       'text': []}
         basic = {'ToD': None, 'shot type': None, 'location': None, 'terior': None, 'subj': None}
         self.location_list = []
+        self.sentences=[]
         i = 0
         sent_idx = 0
         for scene in self.data:
@@ -51,11 +54,10 @@ class ScreenPyScrapper(Scraper):
                 else:
                     continue
                 process_text = str(screen['text'].strip())
-                split_text = re.split(r'[.!?]+', process_text)
-                while ("" in split_text):
-                    split_text.remove("")
-                sent_idx += len(split_text)
-                self.screenplay['sentence_index'].append(sent_idx)
+                sent = nltk.sent_tokenize(process_text)
+                sent_idx += len(sent)
+                self.sentences.extend(sent)
+                self.screenplay["sentence_index"].append(sent_idx)
                 self.screenplay['text'].append(process_text)
                 try:
                     if location['terior'] is not None:
