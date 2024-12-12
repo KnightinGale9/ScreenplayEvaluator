@@ -1,0 +1,33 @@
+Part of Speech,values,percent
+determiner,3011.0,0.15626135243136643
+"adjective (English), other noun-modifier (Chinese)",1133.0,0.05879910737453942
+"noun, singular or mass",3313.0,0.17193419482069647
+"verb, 3rd person singular present",694.0,0.036016399397996786
+"conjunction, subordinating or preposition",2753.0,0.14287197052260106
+"noun, plural",1538.0,0.07981732316155483
+"conjunction, coordinating",416.0,0.021589080907156572
+"verb, gerund or present participle",888.0,0.046084384244122686
+"verb, past participle",430.0,0.022315636514608956
+"verb, non-3rd person singular present",734.0,0.03809227256214645
+"noun, proper singular",174.0,0.009030048264051066
+"pronoun, possessive",609.0,0.03160516892417873
+"verb, past tense",68.0,0.00352898437905444
+adverb,529.0,0.027453422595879393
+"pronoun, personal",1028.0,0.05334994031864653
+"verb, base form",759.0,0.03938969328974
+"verb, modal auxiliary",251.0,0.013026104105039182
+"infinitival ""to""",263.0,0.013648866054284083
+"adverb, particle",123.0,0.006383309979760237
+"adverb, comparative",105.0,0.005449167055892885
+"adjective, comparative",34.0,0.00176449218952722
+"wh-pronoun, personal",88.0,0.004566920961129275
+existential there,42.0,0.002179666822357154
+possessive ending,32.0,0.0016606985313197364
+wh-determiner,205.0,0.010638849966267062
+interjection,7.0,0.00036327780372619233
+wh-adverb,10.0,0.0005189682910374177
+predeterminer,19.0,0.0009860397529710934
+"adjective, superlative",3.0,0.00015569048731122528
+cardinal number,9.0,0.00046707146193367583
+"noun, proper plural",1.0,5.189682910374176e-05
+total,19269.0,

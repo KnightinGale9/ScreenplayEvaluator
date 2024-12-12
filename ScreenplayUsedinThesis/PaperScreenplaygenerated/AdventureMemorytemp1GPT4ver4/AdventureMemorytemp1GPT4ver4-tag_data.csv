@@ -1,0 +1,36 @@
+Part of Speech,values,percent
+determiner,4262.0,0.13473271583472957
+adverb,1526.0,0.048240761230360696
+"adjective (English), other noun-modifier (Chinese)",2659.0,0.08405778775329562
+"noun, singular or mass",5467.0,0.1728258464262005
+"noun, plural",2266.0,0.07163405304586982
+"conjunction, coordinating",997.0,0.031517718837922426
+"verb, non-3rd person singular present",1052.0,0.033256409445831886
+"conjunction, subordinating or preposition",3749.0,0.1185154743464104
+"verb, gerund or present participle",1197.0,0.037840230139411374
+"verb, past participle",641.0,0.02026364872127209
+"pronoun, possessive",784.0,0.024784244301836688
+"noun, proper singular",691.0,0.021844276546644326
+"verb, 3rd person singular present",1460.0,0.046154332500869345
+"pronoun, personal",1637.0,0.05174975500268707
+"wh-pronoun, personal",87.0,0.0027502924161476937
+"adjective, superlative",18.0,0.0005690260171340056
+"verb, modal auxiliary",338.0,0.010685044099516329
+"verb, base form",1034.0,0.032687383428697876
+"adjective, comparative",149.0,0.004710270919609269
+"verb, past tense",194.0,0.006132835962444283
+possessive ending,296.0,0.009357316726203649
+"adverb, particle",182.0,0.005753485284354946
+"adverb, comparative",168.0,0.005310909493250719
+wh-adverb,78.0,0.002465779407580691
+interjection,26.0,0.0008219264691935637
+"infinitival ""to""",384.0,0.012139221698858787
+wh-determiner,144.0,0.004552208137072045
+cardinal number,29.0,0.000916764138715898
+existential there,70.0,0.002212878955521133
+predeterminer,19.0,0.0006006385736414503
+superfluous punctuation,13.0,0.00041096323459678186
+"noun, proper plural",9.0,0.0002845130085670028
+foreign word,1.0,3.1612556507444756e-05
+"adverb, superlative",6.0,0.00018967533904466855
+total,31633.0,

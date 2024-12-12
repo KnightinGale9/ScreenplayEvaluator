@@ -1,0 +1,30 @@
+Part of Speech,values,percent
+determiner,2561.0,0.1417972426775926
+"adjective (English), other noun-modifier (Chinese)",1080.0,0.05979735341343226
+"noun, singular or mass",2451.0,0.13570677149659488
+"verb, 3rd person singular present",555.0,0.03072919550412491
+"conjunction, subordinating or preposition",2596.0,0.1437351198715464
+"noun, plural",1536.0,0.0850451248546592
+"conjunction, coordinating",256.0,0.014174187475776536
+"verb, gerund or present participle",817.0,0.045235590498864955
+"verb, non-3rd person singular present",1245.0,0.06893306018492885
+"verb, past participle",393.0,0.021759592492110073
+"noun, proper singular",196.0,0.01085211228614141
+"pronoun, personal",1642.0,0.09091412435634794
+wh-determiner,188.0,0.010409168927523393
+"infinitival ""to""",242.0,0.013399036598195005
+"verb, base form",540.0,0.02989867670671613
+"pronoun, possessive",526.0,0.0291235258291346
+adverb,451.0,0.024970931842090694
+wh-adverb,94.0,0.0052045844637616965
+"adverb, comparative",144.0,0.0079729804551243
+"verb, modal auxiliary",104.0,0.005758263662034217
+"wh-pronoun, personal",51.0,0.0028237639111898566
+"adverb, particle",55.0,0.003045235590498865
+"verb, past tense",55.0,0.003045235590498865
+possessive ending,95.0,0.005259952383588949
+existential there,1.0,5.536791982725209e-05
+"adjective, comparative",95.0,0.005259952383588949
+"noun, proper plural",46.0,0.002546924312053596
+"adjective, superlative",46.0,0.002546924312053596
+total,18061.0,

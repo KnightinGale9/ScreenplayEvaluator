@@ -26,8 +26,8 @@ class DirectedGraph(Evaluator):
             # print(idx,row['character'])
             char_scene = len(row['character'])
             for offset, charac in enumerate(row['character']):
-                if len(self.char_forced_directed[charac]["x_val"]) != 0 and \
-                        idx - self.char_forced_directed[charac]["x_val"][-1] > 300:
+                if len(self.char_forced_directed[charac]["x_val"]) != 0\
+                        and idx - self.char_forced_directed[charac]["x_val"][-1] > 300:
                     self.char_forced_directed[charac]["x_val"].append(np.nan)
                     self.char_forced_directed[charac]["y_val"].append(np.nan)
 

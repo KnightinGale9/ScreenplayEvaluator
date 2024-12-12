@@ -1,0 +1,34 @@
+Part of Speech,values,percent
+determiner,3460.0,0.14864458478326245
+adverb,1091.0,0.04687030115564721
+"adjective (English), other noun-modifier (Chinese)",1642.0,0.07054173647806848
+"noun, singular or mass",4066.0,0.17467886755166043
+"verb, past participle",491.0,0.02109378356317395
+"conjunction, subordinating or preposition",2784.0,0.11960304162907591
+"noun, plural",1456.0,0.06255101602440177
+"conjunction, coordinating",742.0,0.03187696008935859
+"verb, gerund or present participle",822.0,0.035313829101688364
+"verb, 3rd person singular present",1160.0,0.04983460067878163
+"noun, proper singular",529.0,0.02272629634403059
+"pronoun, possessive",655.0,0.028139365038449972
+"verb, non-3rd person singular present",820.0,0.03522790737638012
+cardinal number,36.0,0.0015465910555483955
+"pronoun, personal",1372.0,0.058942303561455515
+"adverb, particle",135.0,0.005799716458306483
+"verb, past tense",137.0,0.005885638183614727
+interjection,26.0,0.0011169824290071745
+"wh-pronoun, personal",84.0,0.003608712462946256
+"verb, modal auxiliary",210.0,0.00902178115736564
+"verb, base form",793.0,0.03406796408471882
+possessive ending,90.0,0.0038664776388709883
+"infinitival ""to""",274.0,0.011771276367229454
+wh-determiner,105.0,0.00451089057868282
+wh-adverb,57.0,0.0024487691712849593
+"adverb, comparative",70.0,0.003007260385788547
+existential there,22.0,0.0009451389783906861
+"adjective, comparative",108.0,0.004639773166645186
+"adjective, superlative",9.0,0.00038664776388709887
+predeterminer,5.0,0.0002148043132706105
+"noun, proper plural",24.0,0.0010310607036989304
+"adverb, superlative",2.0,8.592172530824419e-05
+total,23277.0,

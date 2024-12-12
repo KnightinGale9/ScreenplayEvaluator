@@ -50,7 +50,7 @@ class ScreenPyScrapper(Scraper):
                         self.location_list['index'].append(i)
 
                 elif screen["head_type"] == 'speaker/title':
-                    self.screenplay['type'].append(screen["head_text"]['speaker/title'].split('(')[0].strip())
+                    self.screenplay['type'].append(str(screen["head_text"]['speaker/title'].split('(')[0].strip()))
                 else:
                     continue
                 process_text = str(screen['text'].strip())

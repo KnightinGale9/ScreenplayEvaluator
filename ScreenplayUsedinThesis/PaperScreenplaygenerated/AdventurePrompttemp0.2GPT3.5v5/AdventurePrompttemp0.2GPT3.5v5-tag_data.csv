@@ -1,0 +1,31 @@
+Part of Speech,values,percent
+determiner,2998.0,0.13112316305108468
+"adjective (English), other noun-modifier (Chinese)",1675.0,0.0732592722183345
+"noun, singular or mass",2970.0,0.12989853044086774
+"verb, 3rd person singular present",715.0,0.03127186843946816
+"conjunction, subordinating or preposition",2927.0,0.128017844646606
+"noun, plural",1903.0,0.08323128061581525
+"verb, gerund or present participle",1036.0,0.04531140657802659
+"conjunction, coordinating",291.0,0.01272743177046886
+"verb, non-3rd person singular present",1313.0,0.05742652204338698
+"verb, past participle",348.0,0.015220433869839048
+"noun, proper singular",20.0,0.0008747375787263821
+"pronoun, personal",1747.0,0.07640832750174947
+"infinitival ""to""",404.0,0.017669699090272918
+"verb, base form",1321.0,0.05777641707487754
+"pronoun, possessive",828.0,0.036214135759272216
+"verb, past tense",150.0,0.0065605318404478655
+"adverb, particle",249.0,0.010890482855143458
+adverb,1121.0,0.04902904128761371
+"verb, modal auxiliary",307.0,0.013427221833449965
+"wh-pronoun, personal",160.0,0.006997900629811057
+existential there,13.0,0.0005685794261721484
+wh-determiner,169.0,0.007391532540237928
+"adjective, comparative",12.0,0.0005248425472358292
+"adverb, comparative",33.0,0.0014433170048985305
+possessive ending,142.0,0.006210636808957313
+cardinal number,2.0,8.74737578726382e-05
+wh-adverb,7.0,0.00030615815255423374
+"adjective, superlative",2.0,8.74737578726382e-05
+predeterminer,1.0,4.37368789363191e-05
+total,22864.0,

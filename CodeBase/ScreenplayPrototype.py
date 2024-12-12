@@ -22,24 +22,28 @@ from CodeBase.StandfordCoreNLPEvaluator import  StandfordCoreNLPEvaluator
 skipped_screenplays=[]
 
 # directory_path= Path("../../ScreenPy/ParserOutput/Adventure")
-# directory_path= Path("../ScreenplayfromChatGPT")
+# directory_path= Path("../escrow")
 directory_path= Path("../input")
+directory_path= Path("../Papernewsc")
 
-for file_path in directory_path.glob("*.json"):
+for file_path in directory_path.glob("*.txt"):
     with file_path.open('r',encoding="utf-8") as file:
         content = file.read()
         print(file)
-        skipfile = set(["starwarsanewhope.json"])
+        # 'AdventureMemorytemp1GPT4ver4.txt',
+        skipfile= set(['AdventurePrompttemp1GPT4ver4.txt'])
+        # skipfile = set(['127hours.json', '2001aspaceodyssey.json', 'adventuresofbuckaroobanzaiacrosstheeighthdimensionthe.json', 'armyofdarkness.json', 'beachthe.json', 'bourneidentitythe.json', 'brokenarrow.json', 'chroniclesofnarniathelionthewitchandthewardrobe.json', 'despicableme2.json', 'djangounchained.json', 'dogma.json', 'dragonslayer.json', 'e.t..json', 'escapefroml.a..json', 'escapefromnewyork.json', 'fantasticmrfox.json', 'findingnemo.json', 'fourfeathers.json', 'ghostandthedarknessthe.json', 'hellboy2thegoldenarmy.json', 'highlanderendgame.json', 'huntforredoctoberthe.json', 'imaginariumofdoctorparnassusthe.json', 'inglouriousbasterds.json', 'jurassicpark.json', 'labyrinth.json', 'legend.json', 'logansrun.json', 'lordoftheringsthetwotowers.json', 'losthorizon.json', 'madmax2theroadwarrior.json', 'missionimpossibleii.json', 'mulan.json', 'piratesofthecaribbeandeadmanschest.json', 'pokemonmewtworeturns.json', 'princessbridethe.json', 'rescuersdownunderthe.json', 'riseoftheguardians.json', 'serenity.json', 'shrek.json', 'starwarsreturnofthejedi.json', 'starwarsthephantommenace.json', 'thunderbirds.json', 'tristanandisolde.json', 'truegrit.json', 'wizardofozthe.json'])
+        # skipfile = set(["indianajonesandtheraidersofthelostark.json"])
         if file_path.name not in skipfile:
             continue
         dir_name=re.sub('\.\w+$','',file_path.name)
-        mkdir=f"../output/test/{dir_name}"
+        mkdir=f"../output/PaperScreenplaygenerated/{dir_name}"
         mkdir_path = Path(mkdir)
         mkdir_path.mkdir(parents=True,exist_ok=True)
 
 
-        screenplay_main=ScreenPyScrapper(mkdir,f"{directory_path}/{file_path.name}")
-        # screenplay_main=ChatGPTScraper(mkdir,f"{directory_path}/{file_path.name}")
+        # screenplay_main=ScreenPyScrapper(mkdir,f"{directory_path}/{file_path.name}")
+        screenplay_main=ChatGPTScraper(mkdir,f"{directory_path}/{file_path.name}")
         try:
             screenplay_main.screenplay_scrape()
             screenplay_main.dataframe_creation()

@@ -35,8 +35,8 @@ class ChatGPTScraper(Scraper):
         location = ""
 
         story_combine = ""
-        pattern1 = r".*(INT\.|EXT\.|I\/E\.|INT\.\/EXT\.)\s+(.*)\s+[-–]\s+(.*)\s*.*"
-        pattern2 = r".*(INT\.|EXT\.|I\/E\.|INT\.\/EXT\.)\s+(.*)\s+[-–]\s+(.*)\s+[-–]\s+(.*)\s*.*"
+        pattern1 = r".*(INT\.|EXT\.|I\/E\.|INT\.\/EXT\.)\s+(.*)\s+[-—–]\s+(.*)\s*.*"
+        pattern2 = r".*(INT\.|EXT\.|I\/E\.|INT\.\/EXT\.)\s+(.*)\s+[-—–]\s+(.*)\s+[-–]\s+(.*)\s*.*"
         screen = self.data.split("\n\n")
 
         for text in screen:
@@ -49,17 +49,17 @@ class ChatGPTScraper(Scraper):
                 # print(i, text)
                 self.location_list.append(i)
                 continue
-            trans=r"^\b(?:FADE IN|FADE OUT|DISSOLVE TO|CUT TO|SMASH CUT|IRIS IN AND IRIS OUT|JUMP CUT|FLASHBACK|TIME CUT)\b.(.*)"
+            trans=r"^\b(?:FADE IN|FADE OUT|DISSOLVE TO|CUT TO|SMASH CUT|IRIS IN AND IRIS OUT|JUMP CUT|FLASHBACK|TIME CUT|THE END.)\b.(.*)"
             if re.match(trans,text):
                 mat = re.match(trans, text)
                 print(text)
-                if mat.group(1) is None:
+                if mat.group(1) is not None:
                     continue
 
             character = text.split("\n")
             if character[0].isupper():
                 character_name = character[0].split("(")
-                self.screenplay["type"].append(character_name[0])
+                self.screenplay["type"].append(character_name[0].strip())
                 temp = ""
                 for tt in character[1:]:
                     temp += tt
@@ -95,13 +95,16 @@ class ChatGPTScraper(Scraper):
                 self.screenplay['ToD'].append(mat.group(3))  # NIGHT
                 # location_list.append(i)
             else:
-                print(location)
+                print(location,text)
                 print("error")
             # screenplay["location"].append(location)
             # sent = nltk.sent_tokenize(text)
             # sent_idx += len(sent)
             # self.sentences.extend(sent)
             # self.screenplay["sentence_index"].append(sent_idx)
+        temp = set(self.location_list)
+        self.location_list = list(temp)
+        self.location_list.sort()
         for ss in self.screenplay:
             print(len(self.screenplay[ss]))
     # def dataframe_creation(self,character_removal=[]):

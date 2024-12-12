@@ -1,0 +1,36 @@
+Part of Speech,values,percent
+determiner,2794.0,0.12509514215357062
+"adjective (English), other noun-modifier (Chinese)",1044.0,0.04674278038952317
+"noun, singular or mass",3806.0,0.1704051936422655
+"verb, 3rd person singular present",710.0,0.03178867248712783
+"conjunction, subordinating or preposition",3169.0,0.14188493396015223
+"noun, plural",1505.0,0.06738303111708081
+"verb, gerund or present participle",552.0,0.024714573539288114
+"conjunction, coordinating",1106.0,0.049518692634877993
+adverb,514.0,0.02301320796955451
+"verb, past participle",485.0,0.021714797403178866
+"noun, proper singular",1038.0,0.046474143720617866
+"pronoun, possessive",1046.0,0.04683232594582494
+cardinal number,21.0,0.0009402283411685695
+"pronoun, personal",1050.0,0.04701141705842848
+"verb, non-3rd person singular present",841.0,0.03765390642489366
+"verb, modal auxiliary",295.0,0.013207969554510857
+"verb, base form",981.0,0.04392209536601746
+possessive ending,94.0,0.00420864114618312
+"infinitival ""to""",414.0,0.018535930154466085
+interjection,2.0,8.954555630176852e-05
+wh-determiner,492.0,0.022028206850235058
+"verb, past tense",111.0,0.004969778374748153
+wh-adverb,21.0,0.0009402283411685695
+"wh-pronoun, personal",58.0,0.0025968211327512874
+"adverb, comparative",41.0,0.0018356839041862548
+superfluous punctuation,1.0,4.477277815088426e-05
+"adverb, particle",63.0,0.0028206850235057085
+predeterminer,2.0,8.954555630176852e-05
+"adjective, superlative",11.0,0.0004925005596597269
+"noun, proper plural",27.0,0.001208865010073875
+"adjective, comparative",34.0,0.0015222744571300648
+"wh-pronoun, possessive",1.0,4.477277815088426e-05
+"adverb, superlative",2.0,8.954555630176852e-05
+existential there,4.0,0.00017909111260353705
+total,22335.0,

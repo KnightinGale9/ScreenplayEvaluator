@@ -1,0 +1,33 @@
+Part of Speech,values,percent
+determiner,3758.0,0.14748822605965464
+"adjective (English), other noun-modifier (Chinese)",1284.0,0.05039246467817896
+"noun, singular or mass",4403.0,0.1728021978021978
+"verb, 3rd person singular present",751.0,0.02947409733124019
+"conjunction, subordinating or preposition",3678.0,0.1443485086342229
+"noun, plural",1084.0,0.04254317111459969
+"conjunction, coordinating",985.0,0.03865777080062795
+"verb, gerund or present participle",654.0,0.025667189952904238
+"verb, past participle",627.0,0.024607535321821035
+"noun, proper singular",787.0,0.030886970172684457
+"verb, non-3rd person singular present",1094.0,0.04293563579277865
+"pronoun, possessive",624.0,0.024489795918367346
+"verb, base form",1364.0,0.05353218210361067
+adverb,582.0,0.0228414442700157
+"pronoun, personal",1671.0,0.06558084772370487
+"wh-pronoun, personal",32.0,0.0012558869701726845
+"infinitival ""to""",403.0,0.015816326530612244
+"adverb, particle",29.0,0.0011381475667189952
+"verb, modal auxiliary",470.0,0.018445839874411302
+"verb, past tense",74.0,0.002904238618524333
+predeterminer,3.0,0.00011773940345368916
+"adjective, comparative",35.0,0.0013736263736263737
+wh-determiner,636.0,0.024960753532182103
+"adverb, comparative",49.0,0.0019230769230769232
+wh-adverb,33.0,0.0012951334379905808
+possessive ending,86.0,0.0033751962323390894
+cardinal number,10.0,0.0003924646781789639
+interjection,3.0,0.00011773940345368916
+existential there,10.0,0.0003924646781789639
+"noun, proper plural",257.0,0.010086342229199373
+"adjective, superlative",4.0,0.00015698587127158556
+total,25480.0,

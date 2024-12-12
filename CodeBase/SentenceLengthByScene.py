@@ -20,7 +20,7 @@ class SentenceLengthByScene(Evaluator):
         values = self.differences
         fig, ax = plt.subplots(figsize=(20, 10))
 
-        plt.bar(keys, values)
+        plt.scatter(keys, values)
         plt.title("Scene By Sentence Length Over Time")
 
         ax.set_xlabel('Scene Index')

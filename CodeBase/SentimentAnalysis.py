@@ -1,14 +1,17 @@
+import numpy as np
 import pandas as pd
 import spacy
 from matplotlib import pyplot as plt
 from transformers import pipeline
 
 from CodeBase.Evaluator import Evaluator
+from CodeBase.GraphParent import GraphParent
+
 nlp = spacy.load("en_core_web_sm") #fast but less accurate
 
 #https://huggingface.co/distilbert/distilbert-base-uncased-finetuned-sst-2-english#uses
 
-class SentimentAnalysis(Evaluator):
+class SentimentAnalysis(GraphParent):
     def create_sentiment_list(self):
         sentiment_pipeline = pipeline("sentiment-analysis",model="distilbert-base-uncased-finetuned-sst-2-english")
 
@@ -44,6 +47,11 @@ class SentimentAnalysis(Evaluator):
 
         # Add labels and title
         plt.legend()
+        plt.xticks(np.append([0], list(self.scraper.get_locationdf()['sentence_index'])))
+        plt.xlim([0, self.scraper.get_locationdf()['sentence_index'].iloc[-1]])
+
+        self.x_axis_alt_bands(ax=ax)
+        plt.xticks(list(range(0, list(self.scraper.get_locationdf()['sentence_index'])[-1], 500)))
         ax.set_xlabel('Sentence Index ')
         ax.set_ylabel('Sentiment Score')
         ax.set_title('Sentiment Analysis')

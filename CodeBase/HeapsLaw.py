@@ -7,7 +7,7 @@ from CodeBase.Evaluator import Evaluator
 
 class HeapsLaw(Evaluator):
 
-    def heaps_law(self,k=10, beta=0.5):
+    def heaps_law(self):
         vocabulary = defaultdict(int)
         self.vocab_growth = []
         i=0
@@ -16,8 +16,7 @@ class HeapsLaw(Evaluator):
             for tt in row['text']:
                 vocabulary[tt] += 1
                 # Calculate expected vocab size according to Heap's law
-                predicted_vocab_size = k * (i + 1) ** beta
-                self.vocab_growth.append((i + 1, len(vocabulary), predicted_vocab_size))
+                self.vocab_growth.append((i + 1, len(vocabulary)))
                 i+=1
         return self.vocab_growth
 
@@ -29,18 +28,17 @@ class HeapsLaw(Evaluator):
         """
         N = [point[0] for point in self.vocab_growth]
         actual_vocab_size = [point[1] for point in self.vocab_growth]
-        predicted_vocab_size = [point[2] for point in self.vocab_growth]
+        # predicted_vocab_size = [point[2] for point in self.vocab_growth]
 
         fig, ax = plt.subplots()
         plt.plot(N, actual_vocab_size, label='Actual Vocabulary Size')
-        # plt.plot(N, predicted_vocab_size, label='Predicted Vocabulary Size (Heap\'s Law)', linestyle='--')
         plt.xlabel('Total Number of Words (N)')
         plt.ylabel('Vocabulary Size (V(N))')
         plt.title('Heap\'s Law: Vocabulary Growth')
         plt.yticks([0,25,50,75,100,125,150,175,200])
         plt.minorticks_on()
 
-        plt.legend()
+        # plt.legend()
         plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension("-HeapsLaw.png")}',bbox_inches='tight')
         plt.close()
 
