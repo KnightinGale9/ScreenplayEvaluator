@@ -1,0 +1,19 @@
+# Data processing
+pandas
+numpy
+spacy
+nltk
+json
+
+# Visualization
+matplotlib
+seaborn
+holoviews
+colorcet
+
+# Machine learning / NLP
+transformers
+
+# Scientific computing
+scipy
+regex
