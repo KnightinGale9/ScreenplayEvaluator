@@ -6,13 +6,24 @@ from CodeBase.Evaluator import Evaluator
 
 
 class HeapsLaw(Evaluator):
+    """
+    An evaluator that calculates and visualizes vocabulary growth according to Heap's Law.
 
+    Heap's Law describes the relationship between the total number of words (N) and the
+    vocabulary size (V(N)) in a corpus of text.
+    Attributes:
+        vocab_growth: A list holding the word index and vocabulary size.
+    """
     def heaps_law(self):
+        """
+        Calculates the actual vocabulary growth in the text, based on Heap's Law.
+        :return: A list of tuples, where each tuple is (i, vocab_size), where 'i' is the number
+                 of words processed and 'vocab_size' is the number of unique words encountered.
+        """
         vocabulary = defaultdict(int)
         self.vocab_growth = []
         i=0
         for _,row in self.scraper.get_fulldf().iterrows():
-            # print(row['text'])
             for tt in row['text']:
                 vocabulary[tt] += 1
                 # Calculate expected vocab size according to Heap's law
@@ -22,10 +33,11 @@ class HeapsLaw(Evaluator):
 
     def plot_vocab_growth(self):
         """
-        Plots the actual vocabulary growth vs. predicted growth from Heap's Law.
-
-        :param vocab_growth: List of tuples (N, actual_vocab_size, predicted_vocab_size).
+        Creates a line plot showing the vocabulary growth over the screenplay.
+        The x axis denotes the sentence index while the y axis denotes the vocabulary size
+        :return: None. (Creates the file with the extension -HeapsLaw.png)
         """
+
         N = [point[0] for point in self.vocab_growth]
         actual_vocab_size = [point[1] for point in self.vocab_growth]
         # predicted_vocab_size = [point[2] for point in self.vocab_growth]
@@ -43,4 +55,9 @@ class HeapsLaw(Evaluator):
         plt.close()
 
     def get_json_data(self):
+        """
+        Returns the evaluation data in a JSON-compatible format for the file Screenplay_Raw_data.json.
+
+        :return: vocab_growth.
+        """
         return self.vocab_growth

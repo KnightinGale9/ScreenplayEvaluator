@@ -4,15 +4,27 @@ import spacy
 from matplotlib import pyplot as plt
 from transformers import pipeline
 
-from CodeBase.Evaluator import Evaluator
 from CodeBase.GraphParent import GraphParent
-
-nlp = spacy.load("en_core_web_sm") #fast but less accurate
 
 #https://huggingface.co/distilbert/distilbert-base-uncased-finetuned-sst-2-english#uses
 
 class SentimentAnalysis(GraphParent):
+    """
+    An evaluator that calculates and visualizes Sentiment Analysis using a model from hugging face.
+
+    Sentiment Analysis provides insights into the story’s emotional tone overall but can also help
+    identify bias toward one sentiment over the other in the screenplay.
+    Attributes:
+        sentences: List of all sentences in the screenplay
+        sentiement: List of sentiment value for all sentences in the screenplay
+        positive: Dataframe of all the positive sentiment in the screenplay
+        negative: Dataframe of all the negative sentiment in the screenplay
+    """
     def create_sentiment_list(self):
+        """
+        Calculates the sentiment analysis for each line of text.
+        Initalizes self.sentences and self.sentiemnt
+        """
         sentiment_pipeline = pipeline("sentiment-analysis",model="distilbert-base-uncased-finetuned-sst-2-english")
 
         self.sentences = []
@@ -23,6 +35,12 @@ class SentimentAnalysis(GraphParent):
             self.sentiemnt.append(sentiment_pipeline(text))
 
     def create_graph(self):
+        """
+        Creates a scatter plot of sentiment scores for each sentence in the dataset.
+        Positive sentiments are represented with green dots, and negative sentiments are represented
+        with red dots. The sentiment score is plotted on the y-axis, and the sentence index on the x-axis.
+        :returns: None (Creates the file with the extension -SentimentAnlysis.png)
+        """
         values = []
         for outbar in self.sentiemnt:
             if outbar[0]['label'] == 'POSITIVE':
@@ -61,4 +79,8 @@ class SentimentAnalysis(GraphParent):
         plt.close()
 
     def get_json_data(self):
+        """
+        A function to retrieve the data created by sentiment analysis for Screenplay_Raw_data.json
+        :return: {"Pos_sentiment":len(self.positive),"Neg_sentiment":len(self.negative)},self.sentiemnt
+        """
         return {"Pos_sentiment":len(self.positive),"Neg_sentiment":len(self.negative)},self.sentiemnt

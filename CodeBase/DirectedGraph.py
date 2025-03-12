@@ -6,8 +6,21 @@ from CodeBase.Evaluator import Evaluator
 
 
 class DirectedGraph(Evaluator):
+    """
+    An evaluator that generates and visulizes a Forced Directed Graph.
 
+    A forced-directed graph is a representation of the character’s movement through the screenplay.
+    This type of visualization provides valuable insights into how the writer organizes characters
+    and scenes spatially and temporally within the story.
+    Attributes:
+        loc_graph: dictionary which stores that stores unique scene headings and give them an incremental number
+        char_forced_directed: Stores each character appearance in each scene throughout the screenplay
+    """
     def create_directed_graph(self):
+        """
+        Creates the data points for a directed graph of characters' appearances in scenes.
+        Initalizes loc_graph and char_forced_directed
+        """
         self.loc_graph = {}
         i = 0
         for loc in self.scraper.get_locationdf()["heading"]:
@@ -37,7 +50,11 @@ class DirectedGraph(Evaluator):
             last_heading = row['heading']
 
     def creategraph(self):
-
+        """
+        Creates a line graph for each character overlayed ontop of each other with an offset to create
+        the forced directed graph. X-axis denotes the sentence index and the y-axis denotes the scene.
+        :returns: None (Creates the file with the extension -DirectedGraph.png)
+        """
         fig, ax = plt.subplots(figsize=(15, 20))
         fig.tight_layout()
         for character in self.scraper.get_characterdict():

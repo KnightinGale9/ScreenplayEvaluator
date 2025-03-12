@@ -13,6 +13,20 @@ nlp = spacy.load("en_core_web_sm") #fast but less accurate
 
 
 class ScreenPyScrapper(Scraper):
+    """
+    Child Class of Scraper that scrapes the formatting provided by screenPy and creates the dictionary for
+    quick conversion to a dataframe
+    Attributes:
+        screenplay : Dictionary that holds all the data of the screenplay
+            sentence_index : the index of the sentence in relation to the full screenplay
+            type : The denotion of if the text is heading or dialogue as denoted by HEADING or CHARCTER
+            terior : The current scene's location type of INT./EXT.
+            heading : The master location of the scene
+            subheading : The secondary heading of the scene
+            ToD : The scene denoted time of day.
+        location_list : A list holding the index of all scene changes
+        sentences : A list holding all the raw text of the screenplay.
+    """
     def __init__(self,dirpath,file_path):
         self.dir_path=dirpath
         try:
@@ -26,6 +40,11 @@ class ScreenPyScrapper(Scraper):
         except FileNotFoundError:
             print(file_path+ " was not found.")
     def screenplay_scrape(self):
+        """
+        Scraping the json file generated from Screenpy scraper.
+        The scraping process extracts and structures these elements for further analysis or processing.
+
+        """
         self.screenplay = {'sentence_index': [], 'type': [], 'terior': [], 'heading': [], 'subheading': [], 'ToD': [],
                       'text': []}
         basic = {'ToD': None, 'shot type': None, 'location': None, 'terior': None, 'subj': None}
@@ -93,75 +112,5 @@ class ScreenPyScrapper(Scraper):
         self.location_list = list(temp)
         self.location_list.sort()
         # print(self.location_list)
-    # def dataframe_creation(self):
-    #
-    #     self.fulldf = pd.DataFrame(self.screenplay)
-    #     self.fulldf.drop(self.fulldf.loc[self.fulldf['text'] == ""].index, inplace=True)
-    #     character_set = set(self.fulldf.loc[self.fulldf['type'] != "HEADING"]['type'])
-    #     sorted_character = list(character_set)
-    #     sorted_character.sort()
-    #     sorted_character = [k for k in sorted_character]
-    #     palette = sns.color_palette(cc.glasbey, n_colors=len(character_set))
-    #     #character dict
-    #     self.characterdict = dict(zip(sorted_character, palette))
-    #     if "" in self.characterdict:
-    #         self.characterdict.pop("")
-    #         for idx, row in self.fulldf.loc[self.fulldf['type'] == ""].iterrows():
-    #             self.fulldf.loc[idx, "text"] = str(row['type'] + " " + row['text'])
-    #             self.fulldf.loc[idx, 'type'] = "HEADING"
-    #     print(self.fulldf)
-    #     self.dialoguedf = self.fulldf.loc[self.fulldf['type'] != "HEADING"].copy()
-    #
-    #     self.headingdf = self.fulldf.loc[self.fulldf['type'] == "HEADING"].copy()
-    #     heading_character = []
-    #
-    #     characterset = set(self.characterdict.keys())
-    #
-    #
-    #     for idx, row in self.headingdf.iterrows():
-    #         # print(idx,row['text'].upper())
-    #         nlpset = set()
-    #         # nlpset.add()
-    #         # print(row['text'].upper())
-    #         for token in nlp(row['text'].upper()):
-    #             nlpset.add(token.lemma_.upper())
-    #         heading_character.append(characterset.intersection(nlpset).copy())
-    #         # if idx == 80:
-    #         #     print(heading_character[-1], nlpset)
-    #     self.headingdf = self.headingdf.assign(characters=heading_character)
-    #     #location df
-    #
-    #     locationdf = self.fulldf[self.fulldf.index.isin(self.location_list)].copy()
-    #
-    #     # locationdf.loc[:, locationdf.columns != 'location']
-    #     locationchar = []
-    #     characterprescene = {key: [] for key in self.characterdict.keys()}
-    #     wclist = self.location_list[1:].copy()
-    #     wclist.append(len(self.fulldf))
-    #
-    #     for start, end in zip(self.location_list, wclist):
-    #         intermidiate = set(self.fulldf.loc[start:end]['type']).difference(set(["HEADING"]))
-    #         intermidiate.union(*self.headingdf.loc[start:end]['characters'])
-    #         locationchar.append(intermidiate)
-    #         for character in characterprescene:
-    #             if character in intermidiate:
-    #                 characterprescene[character].append(1)
-    #             else:
-    #                 characterprescene[character].append(0)
-    #     locationdf['character'] = locationchar
-    #     # locationdf
-    #     characterpresecenedf = pd.DataFrame(characterprescene)
-    #     alpha_character = list(self.characterdict.keys())
-    #     alpha_character.sort()
-    #
-    #     self.locationdf = pd.concat([locationdf, pd.DataFrame(characterprescene, index=self.location_list)], axis=1)
-    #
-    #     self.locationcocurence = self.locationdf.copy()
-    #     # self.locationcocurence.set_index('location', inplace=True)
-    #     self.locationcocurence.drop(
-    #         columns=['heading', 'terior', 'subheading', 'ToD', 'sentence_index', 'type', 'text', 'character'],
-    #         inplace=True)
-
-
     def get_json_data(self):
         return self.screenplay,self.characterdict,self.location_list

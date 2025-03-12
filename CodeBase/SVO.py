@@ -23,13 +23,23 @@ parser = CoreNLPParser(url='http://localhost:9000')
 
 
 class SVO(Evaluator):
+    """
+    An evaluator that find the SVO of a sentence using code from
+    https://github.com/HassanElmadany/Extract-SVO?tab=readme-ov-file.
+    """
     def find_subject(self,t):
+        """
+        https://github.com/HassanElmadany/Extract-SVO?tab=readme-ov-file.
+        """
         for s in t.subtrees(lambda t: t.label() == 'NP'):
             for n in s.subtrees(lambda n: n.label().startswith('NN')):
                 return (n[0], self.find_attrs(n))
 
 
     def find_predicate(self,t):
+        """
+        https://github.com/HassanElmadany/Extract-SVO?tab=readme-ov-file.
+        """
         v = None
 
         for s in t.subtrees(lambda t: t.label() == 'VP'):
@@ -39,6 +49,9 @@ class SVO(Evaluator):
 
 
     def find_object(self,t):
+        """
+        https://github.com/HassanElmadany/Extract-SVO?tab=readme-ov-file.
+        """
         for s in t.subtrees(lambda t: t.label() == 'VP'):
             for n in s.subtrees(lambda n: n.label() in ['NP', 'PP', 'ADJP']):
                 if n.label() in ['NP', 'PP']:
@@ -50,6 +63,9 @@ class SVO(Evaluator):
 
 
     def find_attrs(self,node):
+        """
+        https://github.com/HassanElmadany/Extract-SVO?tab=readme-ov-file.
+        """
         attrs = []
         p = node.parent()
 
@@ -87,6 +103,9 @@ class SVO(Evaluator):
         self.sentences=self.scraper.get_sentences()
         self.premade_tree=tree
     def calculation(self,sentence):
+        """
+        https://github.com/HassanElmadany/Extract-SVO?tab=readme-ov-file.
+        """
 
         # print(find_subject(sentence))
         # print(find_predicate(sentence))
@@ -95,6 +114,9 @@ class SVO(Evaluator):
 
     import sys
     def create_data(self):
+        """
+        https://github.com/HassanElmadany/Extract-SVO?tab=readme-ov-file.
+        """
         output=[]
         # print(len(sentences))
         for i,s in enumerate(self.sentences):

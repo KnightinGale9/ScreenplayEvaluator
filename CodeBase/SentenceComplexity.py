@@ -35,8 +35,28 @@ N_BINS = 20
 
 import json
 class SentenceComplexity(GraphParent):
-
+    """
+    An evaluator that calculates and visualizes the sentence complexity.
+    The code for complexity scores for ygnves and frazier is from
+    Brian Roark, Margaret Mitchell and Kristy Hollingshead
+    Proc BioNLP 2007.
+    Sentence complexity refers to the structural intricacy of a sentence,
+    often measured by factors such as the depth of its syntactic tree,
+    the number of embedded clauses, and the relationships between words.
+    It is used to assess readability, linguistic richness, and cognitive load.
+    Attributes:
+        yngves: A list storing the ygnves score for each sentence
+        fraziers:A list storing the frazier score for each sentence
+        wordss:A list storing the word count for each sentence
+        yngve_avg: the average of all yngve score
+        frazier_avg: the average of all frazier score
+        words_avg: the average of all word count
+    """
     def calc_words(self,t):
+        """
+        Brian Roark, Margaret Mitchell and Kristy Hollingshead
+        Proc BioNLP 2007.
+        """
         if type(t) == str:
             return 1
         else:
@@ -46,6 +66,10 @@ class SentenceComplexity(GraphParent):
             return val
 
     def calc_nodes(self,t):
+        """
+        Brian Roark, Margaret Mitchell and Kristy Hollingshead
+        Proc BioNLP 2007.
+        """
         if type(t) == str:
             return 0
         else:
@@ -55,6 +79,10 @@ class SentenceComplexity(GraphParent):
             return val
 
     def calc_yngve(self,t, par):
+        """
+        Brian Roark, Margaret Mitchell and Kristy Hollingshead
+        Proc BioNLP 2007.
+        """
         if type(t) == str:
             return par
         else:
@@ -64,9 +92,17 @@ class SentenceComplexity(GraphParent):
             return val
 
     def is_sent(self,val):
+        """
+        Brian Roark, Margaret Mitchell and Kristy Hollingshead
+        Proc BioNLP 2007.
+        """
         return len(val) > 0 and val[0] == "S"
 
     def calc_frazier(self,t, par, par_lab):
+        """
+        Brian Roark, Margaret Mitchell and Kristy Hollingshead
+        Proc BioNLP 2007.
+        """
         # print t
         # print par
         if type(t) == str:
@@ -94,6 +130,14 @@ class SentenceComplexity(GraphParent):
 
         self.premade_tree=tree
     def sentence_complexity_calculations(self):
+        """
+        Modified code to fit the evaluator from
+        Brian Roark, Margaret Mitchell and Kristy Hollingshead
+        Proc BioNLP 2007.
+        
+        Calculates the frazier and ygnves score for each sentence.
+        Initalizes yngves, fraziers, wordss, yngve_avg, frazier_avg, and words_avg.
+        """
         sents = 0
         words_tot = 0
         yngve_tot = 0
@@ -144,9 +188,19 @@ class SentenceComplexity(GraphParent):
         self.sentence_data_df["fraziers_mean"] = self.sentence_data_df['fraziers'] / self.sentence_data_df['words']
         # print(sents,self.sentence_data_df)
     def get_json_data(self):
+        """
+        A function to retrieve the data created by sentence complexity for Screenplay_Raw_data.json
+        :return: {"yngves": self.yngves, "fraziers": self.fraziers, "words": self.wordss,
+                   "averages": {"yngve": self.yngve_avg, "frazier": self.frazier_avg, "words": self.words_avg}}
+        """
         return {"yngves": self.yngves, "fraziers": self.fraziers, "words": self.wordss,
                    "averages": {"yngve": self.yngve_avg, "frazier": self.frazier_avg, "words": self.words_avg}}
     def sentence_length_indexing(self):
+        """
+        Creates a bar plot of sentence length by word count.
+        X-axis is denoted by Sentence length by word. Y-axis is denoted by Count.
+        :returns: None (Creates the file with the extension -SentenceWordCount.png)
+        """
         sentence_length = {}
         for idx, line in self.sentence_data_df.iterrows():
             line_length = line['words']
@@ -166,6 +220,11 @@ class SentenceComplexity(GraphParent):
         plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-SentenceWordCount.png")}',bbox_inches='tight')
         plt.close()
     def sentence_length_graph(self):
+        """
+        Creates a scatter plot of sentence length by over time.
+        X-axis is denoted by Sentence index. Y-axis is denoted by sentence length by word.
+        :returns: None (Creates the file with the extension -SentenceWordCountOverTime.png)
+        """
         fig, ax = plt.subplots(figsize=(20, 10))
 
         keys, values = self.sentence_data_df.index, self.sentence_data_df['words']
@@ -184,6 +243,11 @@ class SentenceComplexity(GraphParent):
         plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-SentenceWordCountOverTime.png")}',bbox_inches='tight')
         plt.close()
     def yngves_and_frazier_mean(self):
+        """
+        Creates a scatter plot of sentence compexity of ygnves and frazier score.
+        X-axis is denoted by Sentence index. Y-axis is denoted by complexity score.
+        :returns: None (Creates the file with the extension -yngves_and_frazier_mean.png)
+        """
         # plt.rcParams['font.size'] = 16  # Adjust size as needed
 
         fig, ax = plt.subplots(figsize=(20, 10))

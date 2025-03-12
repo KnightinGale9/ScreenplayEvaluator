@@ -3,7 +3,21 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class PrescenceGraph(GraphParent):
+    """
+    An evaluator that visualizes character presence using a presence graph.
+
+    The Presence Graph is a visualizes a comprehensive overview of character involvement and appearance in the story,
+     clearly highlighting when characters are present and when they share screen time with others.
+    Attributes:
+        sorted_character: List of the character sorted
+    """
     def prescence_graph(self):
+        """
+        Generates the data points for presence graph and graphs the data points .
+        Creates a event plot of character appearence to denote the increasing graph.
+        The x-axis denotes the character while the y axis denotes the character activity throughout the scene.
+        :return: None (Creates the file with the extension -prescenceGraph.png).
+        """
         self.sorted_character = self.sorted_character_cocurancesum()
 
         # Sample data for events

@@ -7,9 +7,36 @@ import colorcet as cc
 nlp = spacy.load("en_core_web_sm") #fast but less accurate
 
 class Scraper(object):
+
+    """
+     Base class for processing scraped screenplay data (in the form of dictionary), ensuring it is properly
+     formatted and split into necessary attributes for evaluators.
+
+    This class extracts structured data from screenplays, processes it into
+    DataFrames, and provides various methods for accessing formatted data.
+
+    Attributes:
+        fulldf : The dataframe containing the full screenplay
+        characterdict : Dictionary containing all the characters of the screenplay
+        dialoguedf : A subset dataframe of fulldf containing only dialogue
+        headingdf : A subset dataframe of fulldf containing non dialogue lines
+        locationdf : A subset of dataframe of fulldf containg only the first line of all scene
+        location_list : A list containing all the indexes of locations in the screeenplay
+        locationcocurence: A dataframe containing all scene and which character are present
+                           to calculate co-occurrence relationship
+    """
+
     def screenplay_scrape(self):
+        """
+        Method to be overwritten to scrape the specific data from screenplay and placed into a
+        dictionary of self.screenplay = {'sentence_index': [], 'type': [], 'terior': [], 'heading': [],
+         'subheading': [], 'ToD': [], 'text': []}
+        """
         pass
     def dataframe_creation(self):
+        """
+        Taking the dictionary from scraper and converting the data into the proper dataframes for use in Evaluators.
+        """
         self.fulldf = pd.DataFrame(self.screenplay)
         # self.fulldf.drop(self.fulldf.loc[self.fulldf['text'] == ""].index, inplace=True)
         character_set = set(self.fulldf.loc[self.fulldf['type'] != "HEADING"]['type'])

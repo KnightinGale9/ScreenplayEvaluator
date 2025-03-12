@@ -8,7 +8,21 @@ hv.extension('bokeh')
 hv.output(size=200)
 
 class CordGraph(Evaluator):
+    """
+    An evaluator that generates a Chord diagram representing character co-occurrence in screenplay locations.
+
+    This class extracts character co-occurrence data, structures it into a DataFrame,
+    and visualizes relationships using a Chord graph.
+    Attributes:
+        result_df: Hold the co-occurance connections between characters for chord diagram
+    """
     def create_data(self):
+        """
+        Processes character co-occurrence data from the screenplay and structures it for visualization.
+
+        The Chord diagram visually represents relationships between characters based on their co-occurrence
+        in different screenplay locations.
+        """
         cocur_dict = {}
         for character in self.scraper.get_characterdict():
             cocur_dict[character] = self.scraper.get_locationcocurence()[self.scraper.get_locationcocurence()[character] == 1].sum()
@@ -32,6 +46,10 @@ class CordGraph(Evaluator):
         self.result_df = pd.DataFrame(results, columns=['source', 'target', 'value'])
 
     def create_graph(self):
+        """
+        Save the bokeh chord graph in an HTML file.
+        :returns: None (Creates the file with the extension -chord_plot.html)
+        """
         # https://holoviews.org/reference/elements/bokeh/Chord.html
         chord = hv.Chord((self.result_df))
         chord.opts(

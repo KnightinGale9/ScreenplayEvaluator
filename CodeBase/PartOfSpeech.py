@@ -8,7 +8,17 @@ from CodeBase.Evaluator import Evaluator
 # nlp = spacy.load("en_core_web_trf") #slow but more accurate
 nlp = spacy.load("en_core_web_sm") #fast but less accurate
 class PartOfSpeech(Evaluator):
+    """
+    An evaluator that aggregates the part of speech tags used in the screenplay.
 
+    Part of Speech distribution of each tag type enables us to gain insights into the compositional makeup
+    of a screenplay. Using Part of Speech can understand the raw distribution and gini index for each tag.
+    Attributes:
+        pos_full: Dictionary of all the abreviation used by Spacy to improve pie charts
+        pos_count: Dictionary of the count of pos
+        pos_collat: Dictionary of each word from each tag and their coint
+        tag_count: Dictionary of the count of each tag
+    """
     def __init__(self, scraper):
         super().__init__(scraper)
         self.pos_full={  "ADJ": "adjective",
@@ -68,6 +78,10 @@ class PartOfSpeech(Evaluator):
                     }
 
     def pos_aggregate(self):
+        """
+        Goes throughout the whole screenplay and aggregaes the pos count, pos collat, and tag count.
+        Initalizes self.pos_count, self.pos_collat, and self.tag_count
+        """
         self.pos_count = {
             'ADJ': 0, 'ADP': 0, 'ADV': 0, 'AUX': 0, 'CCONJ': 0, 'DET': 0, 'INTJ': 0,
             'NOUN': 0, 'NUM': 0, 'PART': 0, 'PRON': 0, 'PROPN': 0, 'PUNCT': 0,
@@ -93,11 +107,19 @@ class PartOfSpeech(Evaluator):
                 self.tag_count[token.tag_] += 1
         # print(self.tag_count)
     def get_json_data(self):
+        """
+        A function to retrieve the data created by sentiment analysis for Screenplay_Raw_data.json
+        :return: {"PartOfSpeech":self.pos_count,"word_in_partofspeech":self.pos_collat,"Tag_Count":self.tag_count}
+        """
         return {"PartOfSpeech":self.pos_count,
                 "word_in_partofspeech":self.pos_collat,
                 "Tag_Count":self.tag_count}
 
     def part_of_speech_investigation(self):
+        """
+        Creates a csv file which shows the values for each part of speech. It shows count,percentage, and gini index.
+        :returns: None (Creates the file with the extension -pos_data.csv)
+        """
         keep = []
         for k in self.pos_count:
             if k in self.pos_full:
@@ -116,6 +138,11 @@ class PartOfSpeech(Evaluator):
         posss.to_csv(f'{self.scraper.get_output_dir()}/{self.replace_file_extension("-pos_data.csv")}')
 
     def tag_investigation(self):
+        """
+        Creates a csv file which shows the values for each tagged part of speech.
+        It shows count,percentage, and gini index.
+        :returns: None (Creates the file with the extension -pos_data.csv)
+        """
         posss = pd.DataFrame()
         keep = []
         for k in self.tag_count:
@@ -130,6 +157,11 @@ class PartOfSpeech(Evaluator):
         posss.to_csv(f'{self.scraper.get_output_dir()}/{self.replace_file_extension("-tag_data.csv")}')
 
     def gini(self,pos):
+        """
+        Calculates the gini index for the given part of speech distribution.
+        :param pos: pos count
+        :return: gini index
+        """
         pos_list = list(self.pos_collat[pos.upper()].items())
         pos_list.sort(key=lambda x: x[1], reverse=True)
         if len(pos_list)==0:

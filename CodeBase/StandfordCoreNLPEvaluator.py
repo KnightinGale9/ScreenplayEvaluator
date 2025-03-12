@@ -20,11 +20,21 @@ except ImportError:
 
 parser = CoreNLPParser(url='http://localhost:9000')
 class StandfordCoreNLPEvaluator(Evaluator):
+    """
+    Using Stanford NLP, generate a parse tree for each sentence. This process improves software
+    efficiency by avoiding redundant parse tree generation,thereby increasing execution speed.
+    Attributes:
+        sentence_tree: the parse trees for each sentence.
+    """
     def __init__(self, scraper):
         super().__init__(scraper)
         self.sentences = self.scraper.get_sentences()
         self.sentence_tree=[]
     def create_trees(self):
+        """
+        Create the parse tree for each sentence.
+        :return: sentence_tree
+        """
         for s in self.sentences:
             if not s.strip():
                 continue
