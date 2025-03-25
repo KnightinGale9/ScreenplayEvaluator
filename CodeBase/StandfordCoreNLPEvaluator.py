@@ -1,6 +1,8 @@
 import sys
 import json
 
+import requests
+
 from CodeBase.Evaluator import Evaluator
 
 try:
@@ -17,8 +19,20 @@ except ImportError:
     print('You need to install the NLTK. Please visit http://nltk.org/install.html for details.')
     print("On Ubuntu, the installation can be done via 'sudo apt-get install python-nltk'")
     sys.exit()
+# Define CoreNLP server URL
+CORENLP_URL = 'http://localhost:9000'
 
-parser = CoreNLPParser(url='http://localhost:9000')
+# Check if CoreNLP server is running
+try:
+    response = requests.get(CORENLP_URL)
+    # if response.status_code != 200:
+    #     raise ConnectionError(f"CoreNLP server responded with status code {response.status_code}")
+except requests.exceptions.RequestException as e:
+    raise ConnectionError(f"Could not connect to CoreNLP server at {CORENLP_URL}. Make sure it is running.") from e
+
+# Initialize parser after confirming server is running
+parser = CoreNLPParser(url=CORENLP_URL)
+# parser = CoreNLPParser(url='http://localhost:9000')
 class StandfordCoreNLPEvaluator(Evaluator):
     """
     Using Stanford NLP, generate a parse tree for each sentence. This process improves software

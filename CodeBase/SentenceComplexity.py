@@ -9,6 +9,7 @@ Proc BioNLP 2007.
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import requests
 
 from matplotlib import colors
 from matplotlib.ticker import PercentFormatter
@@ -147,7 +148,19 @@ class SentenceComplexity(GraphParent):
         self.fraziers = []
         self.wordss = []
 
-        parser = CoreNLPParser(url='http://localhost:9000')
+        CORENLP_URL = 'http://localhost:9000'
+
+        # Check if CoreNLP server is running
+        try:
+            response = requests.get(CORENLP_URL)
+            # if response.status_code != 200:
+            #     raise ConnectionError(f"CoreNLP server responded with status code {response.status_code}")
+        except requests.exceptions.RequestException as e:
+            raise ConnectionError(
+                f"Could not connect to CoreNLP server at {CORENLP_URL}. Make sure it is running.") from e
+
+        # Initialize parser after confirming server is running
+        parser = CoreNLPParser(url=CORENLP_URL)
         for i,s in enumerate(self.sentences):
             # if not s.strip(): continue
             if self.premade_tree is None:

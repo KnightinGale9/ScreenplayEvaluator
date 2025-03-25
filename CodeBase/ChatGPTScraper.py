@@ -26,13 +26,14 @@ class ChatGPTScraper(Scraper):
     def __init__(self,dirpath,file_path):
         self.dir_path=dirpath
         try:
-            with open(file_path, 'r',encoding="utf8") as file:
+            with file_path.open("r", encoding="utf-8") as file:
                 self.data = file.read()
-            self.filename=file_path
-            match = re.search(r"\/(.*)$", file_path)
-            if match:
-                self.filename = match.group(1)
-                print(self.filename)
+            self.filename=file_path.name
+
+            # match = re.search(r"\/(.*)$", file_path.name)
+            # # if match:
+            # #     self.filename = match.group(1)
+            print(self.filename)
         except FileNotFoundError:
             print(file_path+ " was not found.")
 

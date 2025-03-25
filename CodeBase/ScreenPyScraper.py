@@ -30,13 +30,11 @@ class ScreenPyScrapper(Scraper):
     def __init__(self,dirpath,file_path):
         self.dir_path=dirpath
         try:
-            f = open(file_path)
-            self.data = json.load(f)
-            match = re.search(r"\/(.*)$", file_path)
-            if match:
-                self.filename=match.group(1)  # Access group 1
-                print(self.filename)
-            f.close()
+
+            with file_path.open("r", encoding="utf-8") as file:
+                self.data = json.load(file)
+                # print(self.data[0])
+            self.filename=file_path.name
         except FileNotFoundError:
             print(file_path+ " was not found.")
     def screenplay_scrape(self):
