@@ -7,6 +7,11 @@ class CharacterLegend(Evaluator):
      An evaluator that generates a separate character legend file for improved readability of the characters
      in the screenplay along with their corresponding colors.
     """
+
+    def run_evaluator(self):
+        self.print_character_list()
+        print("Character Legend",end="")
+
     def print_character_list(self):
         """
         Generates and saves a character legend as an image by retriving the character dictionary from the scraper,
@@ -22,4 +27,3 @@ class CharacterLegend(Evaluator):
         fig.canvas.draw()
         bbox = legend.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
         fig.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-character_Legend.png")}', dpi="figure", bbox_inches=bbox)
-

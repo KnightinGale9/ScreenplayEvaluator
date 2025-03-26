@@ -13,6 +13,11 @@ class SentenceLengthByScene(Evaluator):
     Attributes:
         differences:List of the length of each scene in the screenplay
     """
+    def run_evaluator(self):
+        self.create_scene_length()
+        self.graph_over_time()
+        self.graph_over_length()
+        print("Sentence Length",end="")
     def create_scene_length(self):
         """
         Aggregates the length of the scene throughout hte screenplay.
@@ -74,4 +79,4 @@ class SentenceLengthByScene(Evaluator):
         A function to retrieve the data created by sentence length by scene for Screenplay_Raw_data.json
         :return: self.scenelenlcolat,self.differences
         """
-        return self.scenelenlcolat,self.differences
+        return {"scenebysentence":self.scenelenlcolat,"scenelengthbysentence":self.differences}

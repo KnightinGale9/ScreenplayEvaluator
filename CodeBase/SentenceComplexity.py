@@ -53,6 +53,12 @@ class SentenceComplexity(GraphParent):
         frazier_avg: the average of all frazier score
         words_avg: the average of all word count
     """
+    def run_evaluator(self):
+        self.sentence_complexity_calculations()
+        self.sentence_length_graph()
+        self.sentence_length_indexing()
+        self.yngves_and_frazier_mean()
+        print("Sentence Complexity",end="")
     def calc_words(self,t):
         """
         Brian Roark, Margaret Mitchell and Kristy Hollingshead
@@ -171,6 +177,7 @@ class SentenceComplexity(GraphParent):
                     continue
             else:
                 t= self.premade_tree[i]
+
             words = self.calc_words(t)
             words_tot += words
             sents += 1
@@ -206,8 +213,8 @@ class SentenceComplexity(GraphParent):
         :return: {"yngves": self.yngves, "fraziers": self.fraziers, "words": self.wordss,
                    "averages": {"yngve": self.yngve_avg, "frazier": self.frazier_avg, "words": self.words_avg}}
         """
-        return {"yngves": self.yngves, "fraziers": self.fraziers, "words": self.wordss,
-                   "averages": {"yngve": self.yngve_avg, "frazier": self.frazier_avg, "words": self.words_avg}}
+        return {"sentencecomplexity":{"yngves": self.yngves, "fraziers": self.fraziers, "words": self.wordss,
+                   "averages": {"yngve": self.yngve_avg, "frazier": self.frazier_avg, "words": self.words_avg}}}
     def sentence_length_indexing(self):
         """
         Creates a bar plot of sentence length by word count.

@@ -33,7 +33,7 @@ except requests.exceptions.RequestException as e:
 # Initialize parser after confirming server is running
 parser = CoreNLPParser(url=CORENLP_URL)
 # parser = CoreNLPParser(url='http://localhost:9000')
-class StandfordCoreNLPEvaluator(Evaluator):
+class StandfordCoreNLPEvaluator():
     """
     Using Stanford NLP, generate a parse tree for each sentence. This process improves software
     efficiency by avoiding redundant parse tree generation,thereby increasing execution speed.
@@ -41,8 +41,7 @@ class StandfordCoreNLPEvaluator(Evaluator):
         sentence_tree: the parse trees for each sentence.
     """
     def __init__(self, scraper):
-        super().__init__(scraper)
-        self.sentences = self.scraper.get_sentences()
+        self.sentences = scraper.get_sentences()
         self.sentence_tree=[]
     def create_trees(self):
         """

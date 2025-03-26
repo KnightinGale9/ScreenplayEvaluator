@@ -15,7 +15,7 @@ from CodeBase.SentenceComplexity import SentenceComplexity
 from CodeBase.ChatGPTScraper import ChatGPTScraper
 from CodeBase.SentimentAnalysis import SentimentAnalysis
 from CodeBase.DirectedGraph import DirectedGraph
-from CodeBase.CordGraph import CordGraph
+from CodeBase.ChordGraph import CordGraph
 from CodeBase.SVO import SVO
 from CodeBase.StandfordCoreNLPEvaluator import  StandfordCoreNLPEvaluator
 

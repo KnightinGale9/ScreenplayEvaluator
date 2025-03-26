@@ -77,6 +77,11 @@ class PartOfSpeech(Evaluator):
                     "HVS": 'forms of "have"',
                     }
 
+    def run_evaluator(self):
+        self.pos_aggregate()
+        self.part_of_speech_investigation()
+        self.tag_investigation()
+        print("Spacy Part of Speech",end="")
     def pos_aggregate(self):
         """
         Goes throughout the whole screenplay and aggregaes the pos count, pos collat, and tag count.
@@ -111,9 +116,9 @@ class PartOfSpeech(Evaluator):
         A function to retrieve the data created by sentiment analysis for Screenplay_Raw_data.json
         :return: {"PartOfSpeech":self.pos_count,"word_in_partofspeech":self.pos_collat,"Tag_Count":self.tag_count}
         """
-        return {"PartOfSpeech":self.pos_count,
+        return {"partofspeech":{"PartOfSpeech":self.pos_count,
                 "word_in_partofspeech":self.pos_collat,
-                "Tag_Count":self.tag_count}
+                "Tag_Count":self.tag_count}}
 
     def part_of_speech_investigation(self):
         """

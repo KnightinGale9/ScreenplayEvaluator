@@ -16,6 +16,10 @@ class DirectedGraph(Evaluator):
         loc_graph: dictionary which stores that stores unique scene headings and give them an incremental number
         char_forced_directed: Stores each character appearance in each scene throughout the screenplay
     """
+    def run_evaluator(self):
+        self.create_directed_graph()
+        self.creategraph()
+        print("Directed Graph",end="")
     def create_directed_graph(self):
         """
         Creates the data points for a directed graph of characters' appearances in scenes.

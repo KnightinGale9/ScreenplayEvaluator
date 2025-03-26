@@ -20,6 +20,10 @@ class SentimentAnalysis(GraphParent):
         positive: Dataframe of all the positive sentiment in the screenplay
         negative: Dataframe of all the negative sentiment in the screenplay
     """
+    def run_evaluator(self):
+        self.create_sentiment_list()
+        self.create_graph()
+        print("Sentiment Analysis",end="")
     def create_sentiment_list(self):
         """
         Calculates the sentiment analysis for each line of text.
@@ -83,4 +87,4 @@ class SentimentAnalysis(GraphParent):
         A function to retrieve the data created by sentiment analysis for Screenplay_Raw_data.json
         :return: {"Pos_sentiment":len(self.positive),"Neg_sentiment":len(self.negative)},self.sentiemnt
         """
-        return {"Pos_sentiment":len(self.positive),"Neg_sentiment":len(self.negative)},self.sentiemnt
+        return {"sentiment_percent":{"Pos_sentiment":len(self.positive),"Neg_sentiment":len(self.negative)},"sentiment":self.sentiemnt}

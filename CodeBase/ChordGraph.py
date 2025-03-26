@@ -7,7 +7,7 @@ from CodeBase.Evaluator import Evaluator
 hv.extension('bokeh')
 hv.output(size=200)
 
-class CordGraph(Evaluator):
+class ChordGraph(Evaluator):
     """
     An evaluator that generates a Chord diagram representing character co-occurrence in screenplay locations.
 
@@ -16,6 +16,11 @@ class CordGraph(Evaluator):
     Attributes:
         result_df: Hold the co-occurance connections between characters for chord diagram
     """
+
+    def run_evaluator(self):
+        self.create_data()
+        self.create_graph()
+        print("Chord Graph",end="")
     def create_data(self):
         """
         Processes character co-occurrence data from the screenplay and structures it for visualization.
@@ -56,3 +61,4 @@ class CordGraph(Evaluator):
             opts.Chord(cmap='Category20', edge_cmap='Category20', edge_color=dim('source').str(),
                        labels='name', node_color=dim('index').str()))
         hv.save(chord, f"{self.scraper.get_output_dir()}/{self.replace_file_extension('-chord_plot.html')}")  # for HTML
+

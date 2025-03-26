@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.cluster.hierarchy import linkage, leaves_list
 
 from CodeBase.Evaluator import Evaluator
 
@@ -47,7 +46,8 @@ class GraphParent(Evaluator):
         self.speaking = {}
 
         for character in self.scraper.get_characterdict():
-            self.speaking[character] = self.scraper.get_dialoguedf().loc[self.scraper.get_dialoguedf()['type'] == character]['sentence_index']
+            self.speaking[character] = \
+            self.scraper.get_dialoguedf().loc[self.scraper.get_dialoguedf()['type'] == character]['sentence_index']
 
     def character_dialogue_lines(self):
         """
@@ -57,7 +57,8 @@ class GraphParent(Evaluator):
         self.speaking = {}
 
         for character in self.scraper.get_characterdict():
-            self.speaking[character] = self.scraper.get_headingdf()[self.scraper.get_headingdf()['characters'].apply(lambda x: character in x)][
+            self.speaking[character] = \
+            self.scraper.get_headingdf()[self.scraper.get_headingdf()['characters'].apply(lambda x: character in x)][
                 'sentence_index']
 
     def combined_lines(self):
@@ -68,64 +69,11 @@ class GraphParent(Evaluator):
         self.speaking = {}
 
         for character in self.scraper.get_characterdict():
-            dia = set(self.scraper.get_dialoguedf().loc[self.scraper.get_dialoguedf()['type'] == character]['sentence_index'])
+            dia = set(
+                self.scraper.get_dialoguedf().loc[self.scraper.get_dialoguedf()['type'] == character]['sentence_index'])
             setting = set(
-                self.scraper.get_headingdf()[self.scraper.get_headingdf()['characters'].apply(lambda x: character in x)]['sentence_index'])
+                self.scraper.get_headingdf()[
+                    self.scraper.get_headingdf()['characters'].apply(lambda x: character in x)]['sentence_index'])
             combine = list(dia.union(setting))
             combine.sort()
             self.speaking[character] = combine
-
-    def sorted_character_name(self):
-        """
-        Sorts the character dictionary key by sorting by name.
-        :return: sorted_character
-        """
-        sorted_character = list(self.speaking.items())
-        sorted_character.sort()
-        # print(sorted_character)
-        sorted_character = [k for k, v in sorted_character]
-        # print(sorted_character)
-        return sorted_character
-
-    def sorted_character_length(self):
-        """
-        Sorts the character dictionary key by sorting by character activity in the story.
-        :return: sorted_character
-        """
-        sorted_character = list(self.speaking.items())
-        sorted_character.sort()
-        sorted_character = sorted(sorted_character, key=lambda x: len(x[1]), reverse=True)
-        print(sorted_character)
-        sorted_character = [k for k, v in sorted_character]
-
-        return sorted_character
-
-    def sorted_character_matrix(self):
-        """
-        Sorts the character dictionary key by sorting by linkage_matrix.
-        :return: sorted_character
-        """
-        co_occurrence = np.dot(self.scraper.get_locationcocurence().T, self.scraper.get_locationcocurence())
-        linkage_matrix = linkage(co_occurrence, method='single')
-        dendrogram_order = leaves_list(linkage_matrix)
-
-        # Reorder characters
-        characters = self.scraper.get_locationcocurence().columns
-        reordered_characters = characters[dendrogram_order]
-
-        # Reorder data for plotting
-        sorted_character = self.scraper.get_locationcocurence()[reordered_characters]
-        return sorted_character
-
-    def sorted_character_cocurancesum(self):
-        """
-        Sorts the character dictionary key by sorting by coocurance sum
-        :return: sorted_character
-        """
-        co_occurrence = np.dot(self.scraper.get_locationcocurence().T, self.scraper.get_locationcocurence())
-        co_occurrence_sums = co_occurrence.sum(axis=1)
-
-        # Sort characters based on their co-occurrence sums
-        sorted_indices = np.argsort(co_occurrence_sums)[::-1]
-        sorted_character = self.scraper.get_locationcocurence().columns[sorted_indices]
-        return sorted_character

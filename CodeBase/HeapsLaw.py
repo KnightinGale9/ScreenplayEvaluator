@@ -14,6 +14,10 @@ class HeapsLaw(Evaluator):
     Attributes:
         vocab_growth: A list holding the word index and vocabulary size.
     """
+    def run_evaluator(self):
+        self.heaps_law()
+        self.plot_vocab_growth()
+        print("Heaps Law",end="")
     def heaps_law(self):
         """
         Calculates the actual vocabulary growth in the text, based on Heap's Law.
@@ -60,4 +64,4 @@ class HeapsLaw(Evaluator):
 
         :return: vocab_growth.
         """
-        return self.vocab_growth
+        return {"vocabGrowth":self.vocab_growth}

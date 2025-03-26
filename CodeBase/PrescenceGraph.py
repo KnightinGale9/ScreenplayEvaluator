@@ -1,6 +1,7 @@
 from CodeBase.GraphParent import GraphParent
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.cluster.hierarchy import linkage, leaves_list
 
 class PrescenceGraph(GraphParent):
     """
@@ -11,6 +12,10 @@ class PrescenceGraph(GraphParent):
     Attributes:
         sorted_character: List of the character sorted
     """
+    def run_evaluator(self):
+        self.combined_lines()
+        self.prescence_graph()
+        print("Presence Graph",end="")
     def prescence_graph(self):
         """
         Generates the data points for presence graph and graphs the data points .
@@ -54,3 +59,64 @@ class PrescenceGraph(GraphParent):
 
         plt.savefig(f'{self.scraper.get_output_dir()}/{self.replace_file_extension( "-prescenceGraph.png")}',bbox_inches='tight')
         plt.close()
+
+    def get_json_data(self):
+        """
+        A function to retrieve the data created by increasing graph for Screenplay_Raw_data.json
+        :return: speaking
+        """
+        return {"speaking": self.speaking}
+    def sorted_character_name(self):
+        """
+        Sorts the character dictionary key by sorting by name.
+        :return: sorted_character
+        """
+        sorted_character = list(self.speaking.items())
+        sorted_character.sort()
+        # print(sorted_character)
+        sorted_character = [k for k, v in sorted_character]
+        # print(sorted_character)
+        return sorted_character
+
+    def sorted_character_length(self):
+        """
+        Sorts the character dictionary key by sorting by character activity in the story.
+        :return: sorted_character
+        """
+        sorted_character = list(self.speaking.items())
+        sorted_character.sort()
+        sorted_character = sorted(sorted_character, key=lambda x: len(x[1]), reverse=True)
+        print(sorted_character)
+        sorted_character = [k for k, v in sorted_character]
+
+        return sorted_character
+
+    def sorted_character_matrix(self):
+        """
+        Sorts the character dictionary key by sorting by linkage_matrix.
+        :return: sorted_character
+        """
+        co_occurrence = np.dot(self.scraper.get_locationcocurence().T, self.scraper.get_locationcocurence())
+        linkage_matrix = linkage(co_occurrence, method='single')
+        dendrogram_order = leaves_list(linkage_matrix)
+
+        # Reorder characters
+        characters = self.scraper.get_locationcocurence().columns
+        reordered_characters = characters[dendrogram_order]
+
+        # Reorder data for plotting
+        sorted_character = self.scraper.get_locationcocurence()[reordered_characters]
+        return sorted_character
+
+    def sorted_character_cocurancesum(self):
+        """
+        Sorts the character dictionary key by sorting by coocurance sum
+        :return: sorted_character
+        """
+        co_occurrence = np.dot(self.scraper.get_locationcocurence().T, self.scraper.get_locationcocurence())
+        co_occurrence_sums = co_occurrence.sum(axis=1)
+
+        # Sort characters based on their co-occurrence sums
+        sorted_indices = np.argsort(co_occurrence_sums)[::-1]
+        sorted_character = self.scraper.get_locationcocurence().columns[sorted_indices]
+        return sorted_character

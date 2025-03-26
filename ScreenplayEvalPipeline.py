@@ -27,7 +27,8 @@ from CodeBase.DirectedGraph import DirectedGraph
 from CodeBase.ChordGraph import ChordGraph
 from CodeBase.SVO import SVO
 from CodeBase.StandfordCoreNLPEvaluator import  StandfordCoreNLPEvaluator
-
+from CodeBase.Pipeline import Pipeline
+from CodeBase.POSCoreNLP import POSCoreNLP
 class Evaluator:
     def __init__(self):
         parser = argparse.ArgumentParser(
@@ -124,86 +125,30 @@ class Evaluator:
                 try:
                     self.screenplay_main.screenplay_scrape()
                     self.screenplay_main.dataframe_creation()
-                    print("Evaluators that have finished", end=": ")
+
 
                     screenplay_data = {}
                     screenplay_data["screenplay"], screenplay_data["characterdict"], screenplay_data[
                         "location_list"] = self.screenplay_main.get_json_data()
-
-                    if args.charlist or alleval:
-                        charlist = CharacterLegend(self.screenplay_main)
-                        charlist.print_character_list()
-                        print("Character Legend", end=", ")
-                    if args.increasinggraph or alleval :
-                        increasinggraph = IncreasingGraph(self.screenplay_main)
-                        increasinggraph.combined_lines()
-                        increasinggraph.increasing_graph()
-                        screenplay_data["speaking"] = increasinggraph.get_json_data()
-                        print("Increasing Graph", end=", ")
-                    if args.prescencegraph or alleval:
-                        prescencegraph = PrescenceGraph(self.screenplay_main)
-                        prescencegraph.combined_lines()
-                        prescencegraph.prescence_graph()
-                        print("Presence Graph", end=", ")
-                    if args.sentencelength or alleval:
-                        sentlength = SentenceLengthByScene(self.screenplay_main)
-                        sentlength.create_scene_length()
-                        sentlength.graph_over_time()
-                        sentlength.graph_over_length()
-                        screenplay_data["SceneBySentence"], screenplay_data[
-                            "SceneLengthBySentence"] = sentlength.get_json_data()
-                        print("Sentence Length", end=", ")
-                    if args.terior or alleval:
-                        terior = TeriorCount(self.screenplay_main)
-                        terior.count_terior()
-                        print("Terior Count", end=", ")
-                    if args.heapslaw or alleval:
-
-                        heapslaw = HeapsLaw(self.screenplay_main)
-                        heapslaw.heaps_law()
-                        heapslaw.plot_vocab_growth()
-                        screenplay_data["vocabGroth"] = heapslaw.get_json_data()
-                        print("Heaps Law", end=", ")
-                    if args.partofspeech or alleval:
-                        partofspeech = PartOfSpeech(self.screenplay_main)
-                        partofspeech.pos_aggregate()
-                        partofspeech.part_of_speech_investigation()
-                        partofspeech.tag_investigation()
-                        screenplay_data["partofspeech"] = partofspeech.get_json_data()
-                        print("Part of Speech", end=", ")
-                    if  args.directedgraph or alleval:
-                        dGraph = DirectedGraph(self.screenplay_main)
-                        dGraph.create_directed_graph()
-                        dGraph.creategraph()
-                        print("Directed Graph", end=", ")
-                    if args.chordgraph or alleval:
-                        CGraph = ChordGraph(self.screenplay_main)
-                        CGraph.create_data()
-                        CGraph.create_graph()
-                        print("Cord Graph", end=", ")
-                    if args.sentimentanalysis or alleval:
-                        sentimentanalysis = SentimentAnalysis(self.screenplay_main)
-                        sentimentanalysis.create_sentiment_list()
-                        sentimentanalysis.create_graph()
-                        screenplay_data["sentiment_percent"], screenplay_data[
-                            "sentiment"] = sentimentanalysis.get_json_data()
-                        print("Sentiment Analysis", end=", ")
-                    if args.sentencecomplexity or args.svo:
+                    if args.sentencecomplexity or args.svo or args.partofspeech or alleval:
                         coreNLPSent = StandfordCoreNLPEvaluator(self.screenplay_main)
                         tree = coreNLPSent.create_trees()
-                    if args.sentencecomplexity or alleval:
-                        sentencecomplexity = SentenceComplexity(self.screenplay_main, tree=tree)
-                        sentencecomplexity.sentence_complexity_calculations()
-                        sentencecomplexity.sentence_length_graph()
-                        sentencecomplexity.sentence_length_indexing()
-                        sentencecomplexity.yngves_and_frazier_mean()
-                        screenplay_data["sentencecomplexity"] = sentencecomplexity.get_json_data()
-                        print("Sentence Complexity", end=", ")
-                    if args.svo or alleval:
-                        svvo = SVO(self.screenplay_main, tree=tree)
-                        svvo.create_data()
-                        print("SVO")
+                    print("Evaluators that have finished", end=": ")
 
+                    steps= [(args.charlist, CharacterLegend(self.screenplay_main)),
+                    (args.increasinggraph,IncreasingGraph(self.screenplay_main)),
+                    (args.prescencegraph, PrescenceGraph(self.screenplay_main)),
+                    (args.sentencelength,SentenceLengthByScene(self.screenplay_main)),
+                    (args.heapslaw,HeapsLaw(self.screenplay_main)),
+                    (args.partofspeech,POSCoreNLP(self.screenplay_main,tree=tree)),
+                    (args.directedgraph,DirectedGraph(self.screenplay_main)),
+                    (args.chordgraph,ChordGraph(self.screenplay_main)),
+                    (args.sentimentanalysis, SentimentAnalysis(self.screenplay_main)),
+                    (args.sentencecomplexity,SentenceComplexity(self.screenplay_main, tree=tree)),
+                    (args.svo,SVO(self.screenplay_main, tree=tree))]
+
+                    pipeline = Pipeline(steps)
+                    screenplay_data.update(pipeline.run(alleval))
 
                 except Exception:
                     print(f["name"])

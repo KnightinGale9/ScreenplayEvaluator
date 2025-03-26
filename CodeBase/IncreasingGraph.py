@@ -9,6 +9,10 @@ class IncreasingGraph(GraphParent):
     The Increasing Graph visualizes character activity aggregated as a line graph across an entire
     screenplay, focusing on cumulative appearances rather than individual scenes.
     """
+    def run_evaluator(self):
+        self.combined_lines()
+        self.increasing_graph()
+        print("Increasing Graph",end="")
     def increasing_graph(self):
         """
         Generates the data points for increasing graph and graphs the data points .
@@ -41,4 +45,4 @@ class IncreasingGraph(GraphParent):
         A function to retrieve the data created by increasing graph for Screenplay_Raw_data.json
         :return: speaking
         """
-        return self.speaking
+        return {"speaking": self.speaking}

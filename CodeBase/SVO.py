@@ -27,6 +27,10 @@ class SVO(Evaluator):
     An evaluator that find the SVO of a sentence using code from
     https://github.com/HassanElmadany/Extract-SVO?tab=readme-ov-file.
     """
+    def run_evaluator(self):
+        self.create_data()
+        print("SVO",end="")
+
     def find_subject(self,t):
         """
         https://github.com/HassanElmadany/Extract-SVO?tab=readme-ov-file.
@@ -138,3 +142,6 @@ class SVO(Evaluator):
 
         with open(f'{self.scraper.get_output_dir()}/{self.replace_file_extension("-SVO.json")}', "w") as f:
             json.dump(output, f)
+
+    def get_json_data(self):
+        return {}

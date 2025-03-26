@@ -1,8 +1,7 @@
-from CodeBase.Scraper import Scraper
 from abc import ABC, abstractmethod
 import regex as re
 
-class Evaluator():
+class Evaluator(ABC):
     """
     A base evaluator class that is intended to be inherited by other evaluators that perform specific analysis
     on scraped data. The class provides basic functionality for interacting with a Scraper object and manipulating
@@ -11,7 +10,7 @@ class Evaluator():
     def __init__(self, scraper=None):
         self.scraper = scraper
 
-    # @abstractmethod
+    @abstractmethod
     def run_evaluator(self):
         pass
     def get_json_data(self):
@@ -20,7 +19,7 @@ class Evaluator():
 
         :return: Evaluation data in JSON format (default implementation returns None).
         """
-        pass
+        return {}
     def replace_file_extension(self,new_extension):
         """
         Adds the evaluator name to the screenplay when creating a new visualization.
