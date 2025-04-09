@@ -1,3 +1,6 @@
+import difflib
+
+import regex as re
 import pandas as pd
 import spacy
 import seaborn as sns
@@ -40,17 +43,45 @@ class Scraper(object):
         self.fulldf = pd.DataFrame(self.screenplay)
         # self.fulldf.drop(self.fulldf.loc[self.fulldf['text'] == ""].index, inplace=True)
         character_set = set(self.fulldf.loc[self.fulldf['type'] != "HEADING"]['type'])
-        sorted_character = list(character_set)
+
+        value_counts = self.fulldf['type'].value_counts()
+        frequent_values = value_counts[value_counts > 2].index
+
+        frequent_values = frequent_values[frequent_values != 'HEADING']
+
+        all_real_characters = self.character_real_set.intersection(character_set).union(frequent_values)
+
+        removed_character = character_set - all_real_characters
+
+        temp = []
+        for char in removed_character:
+            matches = difflib.get_close_matches(char, self.character_real_set, n=1, cutoff=0.9)
+            if len(matches) > 0:
+                all_real_characters.add(char)
+
+        sorted_character = list(all_real_characters)
         sorted_character.sort()
         sorted_character = [k for k in sorted_character]
-        palette = sns.color_palette(cc.glasbey, n_colors=len(character_set))
+        palette = sns.color_palette(cc.glasbey, n_colors=len(all_real_characters))
         #character dict
         self.characterdict = dict(zip(sorted_character, palette))
+
+
         if "" in self.characterdict:
+            last_heading = self.fulldf[self.fulldf['type'] == 'HEADING'].iloc[0]
             self.characterdict.pop("")
             for idx, row in self.fulldf.loc[self.fulldf['type'] == ""].iterrows():
                 self.fulldf.loc[idx, "text"] = str(row['type'] + " " + row['text'])
                 self.fulldf.loc[idx, 'type'] = "HEADING"
+            for idx,row in self.fulldf.iterrows():
+                if row['type']=="HEADING":
+                    last_heading=row['text']
+                    continue
+                matches= re.search(rf'\b{re.escape(row["type"])}\b', row['text'])
+                if bool(matches):
+                    self.fulldf.loc[idx, "text"] = str(row['type'] + " " + row['text'])
+                    self.fulldf.loc[idx, 'type'] = "HEADING"
+
         # print(self.fulldf)
         self.dialoguedf = self.fulldf.loc[self.fulldf['type'] != "HEADING"].copy()
 

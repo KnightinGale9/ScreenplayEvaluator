@@ -23,6 +23,7 @@ class POSCoreNLP(Evaluator):
     """
     def __init__(self, scraper,tree=None):
         super().__init__(scraper)
+        self.sentences = self.scraper.get_sentences()
         #https://docs.datasaur.ai/assisted-labeling/ml-assisted-labeling/corenlp-pos
         self.pos_full={
         "CC": "conjunction, coordinating",
@@ -144,41 +145,64 @@ class POSCoreNLP(Evaluator):
         Creates a csv file which shows the values for each part of speech. It shows count,percentage, and gini index.
         :returns: None (Creates the file with the extension -pos_data.csv)
         """
-        keep = []
-        for k in self.pos_count:
-            if k in self.pos_full:
-                keep.append(k)
-        temp_dict = dict((k, self.pos_count[k]) for k in keep)
+        categories = {
+            "Adjective": ["JJ", "JJR", "JJS"],
+            "Adposition": ["IN"],
+            "Adverb": ["RB", "RBR", "RBS"],
+            "Auxiliary": ["MD"],
+            "Coordinating Conjunction": ["CC"],
+            "Determiner": ["DT", "PDT", "WDT"],
+            "Interjection": ["UH"],
+            "Noun": ["NN", "NNS"],
+            "Pronoun": ["PRP", "PRP$", "WP", "WP$"],
+            "Proper Noun": ["NNP", "NNPS"],
+            # "Subordinating Conjunction": ["IN"],  # Note: "IN" appears under both Adposition and Subordinating Conjunction
+            "Verb": ["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"]
+        }
+        self.categories_count={
+             "Adjective": 0,
+            "Adposition": 0,
+            "Adverb": 0,
+            "Auxiliary": 0,
+            "Coordinating Conjunction": 0,
+            "Determiner": 0,
+            "Interjection": 0,
+            "Noun": 0,
+            "Pronoun": 0,
+            "Proper Noun": 0,
+            # "Subordinating Conjunction": ["IN"],  # Note: "IN" appears under both Adposition and Subordinating Conjunction
+            "Verb": 0
+        }
+        self.categories_colat = {
+            "Adjective": {},
+            "Adposition": {},
+            "Adverb": {},
+            "Auxiliary": {},
+            "Coordinating Conjunction": {},
+            "Determiner": {},
+            "Interjection": {},
+            "Noun": {},
+            "Pronoun": {},
+            "Proper Noun": {},
+            # "Subordinating Conjunction": ["IN"],  # Note: "IN" appears under both Adposition and Subordinating Conjunction
+            "Verb": {}
+        }
+        for k in categories:
+            for i in categories[k]:
+                self.categories_count[k] += self.pos_count[i]
+                self.categories_colat[k].update(self.pos_collat[i])
+
         posss = pd.DataFrame()
-        posss["Part of Speech"] = [self.pos_full[k] for k in temp_dict]
-        posss["values"] = temp_dict.values()
+        posss["Part of Speech"] =  self.categories_count.keys()
+        posss["values"] = self.categories_count.values()
         posss["percent"] = posss['values'] / posss['values'].sum()
         posss.set_index("Part of Speech", inplace=True)
         gini_val = {}
-        for key in temp_dict:
+        for key in self.categories_count:
             gini_val[key] = self.gini(key)
         posss["gini"] = gini_val.values()
         posss.loc["total"] = [posss['values'].sum(), np.nan, np.nan]
         posss.to_csv(f'{self.scraper.get_output_dir()}/{self.replace_file_extension("-pos_data.csv")}')
-
-    def tag_investigation(self):
-        """
-        Creates a csv file which shows the values for each tagged part of speech.
-        It shows count,percentage, and gini index.
-        :returns: None (Creates the file with the extension -pos_data.csv)
-        """
-        posss = pd.DataFrame()
-        keep = []
-        for k in self.tag_count:
-            if k in self.pos_full:
-                keep.append(k)
-        temp_dict= dict((k, self.tag_count[k]) for k in keep)
-        posss["Part of Speech"] = [self.pos_full[k] for k in temp_dict]
-        posss["values"] = temp_dict.values()
-        posss["percent"] = posss['values'] / posss['values'].sum()
-        posss.set_index("Part of Speech", inplace=True)
-        posss.loc["total"] = [posss['values'].sum(), np.nan]
-        posss.to_csv(f'{self.scraper.get_output_dir()}/{self.replace_file_extension("-tag_data.csv")}')
 
     def gini(self,pos):
         """
@@ -186,7 +210,7 @@ class POSCoreNLP(Evaluator):
         :param pos: pos count
         :return: gini index
         """
-        pos_list = list(self.pos_collat[pos.upper()].items())
+        pos_list = list(self.categories_colat[pos].items())
         pos_list.sort(key=lambda x: x[1], reverse=True)
         if len(pos_list)==0:
             return 0

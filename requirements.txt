@@ -16,7 +16,7 @@ colorama==0.4.5
 transformers==4.32.1
 torch==2.3.0
 openai==0.28
-
+pycorenlp== 0.3.0
 # Scientific computing
 scipy==1.15.2
 regex==2022.7.9

@@ -46,6 +46,8 @@ class ScreenPyScrapper(Scraper):
         self.screenplay = {'sentence_index': [], 'type': [], 'terior': [], 'heading': [], 'subheading': [], 'ToD': [],
                       'text': []}
         basic = {'ToD': None, 'shot type': None, 'location': None, 'terior': None, 'subj': None}
+        self.character_real_set = set()
+
         self.location_list = []
         self.sentences=[]
         i = 0
@@ -59,6 +61,8 @@ class ScreenPyScrapper(Scraper):
                     # if screen['head_text']['subj'] == 'FADE IN':
                     #     #                 print(screen)
                     #     continue
+                    self.character_real_set.update(re.findall(r'\b(?:[A-Z\']{2,}(?:\s+[A-Z\']{2,})*)\b', screen['text']))
+                    self.character_real_set.update(re.findall(r'\b[A-Z]{2,}\b', screen['text']))
                     self.screenplay['type'].append(screen["head_type"].upper())
                     # print(screen['head_text'])
                     if screen['head_text'] != location and screen['head_text']['terior'] is not None:

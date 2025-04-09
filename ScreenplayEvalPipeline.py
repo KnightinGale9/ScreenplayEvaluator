@@ -7,6 +7,9 @@ import sys
 import os
 #supressing torch print
 import warnings
+
+from CodeBase.CharacterGender import CharacterGender
+
 warnings.filterwarnings("ignore")
 from transformers.utils.logging import set_verbosity_error
 set_verbosity_error()
@@ -38,18 +41,19 @@ class Evaluator:
         parser.add_argument("input", help="Required path to directory or screenplay for files you want to run")
         parser.add_argument("output", nargs="?", default=None, help="Optional path to the output directory. Defaults to output directory")
 
-        parser.add_argument("--charlist", help="Output the characters and corresponding colors", action='store_true', default=False)
-        parser.add_argument("--increasinggraph", help="Run the increasing graph evaluator.", action='store_true', default=False)
-        parser.add_argument("--prescencegraph", help="Run the presence graph evaluator.", action='store_true', default=False)
-        parser.add_argument("--sentencelength", help="Run the sentence length evaluator.", action='store_true', default=False)
-        parser.add_argument("--terior", help="Path to glove file or None", action='store_true', default=False)
-        parser.add_argument("--heapslaw", help="Run the heaps law evaluator.", action='store_true', default=False)
-        parser.add_argument("--partofspeech", help="Run the part of speech evaluator.", action='store_true', default=False)
-        parser.add_argument("--directedgraph", help="Run the directed graph evaluator.", action='store_true', default=False)
-        parser.add_argument("--chordgraph", help="Run the chord graph evaluator.", action='store_true', default=False)
-        parser.add_argument("--sentimentanalysis", help="Run the sentiment analysis evaluator.", action='store_true', default=False)
-        parser.add_argument("--sentencecomplexity", help="Run the sentence complexity graph evaluator.", action='store_true', default=False)
-        parser.add_argument("--svo", help="Run the svo evaluator.", action='store_true', default=False)
+        parser.add_argument("-cl","--charlist", help="Output the characters and corresponding colors", action='store_true', default=False)
+        parser.add_argument("-ig","--increasinggraph", help="Run the increasing graph evaluator.", action='store_true', default=False)
+        parser.add_argument("-pg","--prescencegraph", help="Run the presence graph evaluator.", action='store_true', default=False)
+        parser.add_argument("-sl","--sentencelength", help="Run the sentence length evaluator.", action='store_true', default=False)
+        parser.add_argument("-t","--terior", help="Path to glove file or None", action='store_true', default=False)
+        parser.add_argument("-hl","--heapslaw", help="Run the heaps law evaluator.", action='store_true', default=False)
+        parser.add_argument("-pos","--partofspeech", help="Run the part of speech evaluator.", action='store_true', default=False)
+        parser.add_argument("-dg","--directedgraph", help="Run the directed graph evaluator.", action='store_true', default=False)
+        parser.add_argument("-cg","--chordgraph", help="Run the chord graph evaluator.", action='store_true', default=False)
+        parser.add_argument("-sa","--sentimentanalysis", help="Run the sentiment analysis evaluator.", action='store_true', default=False)
+        parser.add_argument("-sc","--sentencecomplexity", help="Run the sentence complexity graph evaluator.", action='store_true', default=False)
+        parser.add_argument("-s","--svo", help="Run the svo evaluator.", action='store_true', default=False)
+        parser.add_argument("-g","--gender", help="Run the svo evaluator.", action='store_true', default=False)
 
         parser.add_argument("--no_log", help="Supress logging aka '-Screenplay_raw_data.json' ", action='store_false', default=True)
         parser.add_argument("--no_print", help="Supress printing", action='store_true', default=False)
@@ -67,9 +71,7 @@ class Evaluator:
         files = []
         if path.exists():
             if path.is_file():
-                print(f"Processing single file: {path.name}")
-                with path.open("r", encoding="utf-8") as f:
-                    content = f.read()
+                # print(f"Processing single file: {path.name}")
                 files.append({"name": path.name, "content": path})
             elif path.is_dir():
                 print(f"Processing directory: {path}")
@@ -89,30 +91,29 @@ class Evaluator:
         # if you add a new evaluator flag add it to this if statement
         if  args.charlist or args.increasinggraph or args.prescencegraph or args.sentencelength or args.terior or \
             args.heapslaw or args.partofspeech or args.directedgraph  or args.chordgraph or args.svo or \
-            args.sentimentanalysis or args.sentencecomplexity :
+            args.sentimentanalysis or args.sentencecomplexity or args.gender :
             alleval=False
 
         tree=None
         skipped_screenplays=[]
-        print(args.input)
+        # print(args.input)
         files = self.process_path(args.input)
+        # print(files)
         for f in files:
-            print(f["name"],f["content"])
+            # print(f["name"],f["content"])
             dir_name = re.sub(r'\.\w+$', '', f["name"])
-            print(dir_name)
+            print("Running evaluators on",dir_name)
             if args.output is not None:
                 mkdir = f"{args.output}/{dir_name}"
                 mkdir_path = Path(mkdir)
                 mkdir_path.mkdir(parents=True, exist_ok=True)
             else:
-                print("yyyyy")
                 mkdir = f"output2/{dir_name}"
                 mkdir_path = Path(mkdir)
                 mkdir_path.mkdir(parents=True, exist_ok=True)
             try:
                 # print(f["name"])
                 if ".txt" in f["name"]:
-                    print("yy")
                     self.screenplay_main = ChatGPTScraper(mkdir, f["content"])
                 elif ".json" in f["name"]:
                     self.screenplay_main=ScreenPyScrapper(mkdir,f["content"])
@@ -145,7 +146,8 @@ class Evaluator:
                     (args.chordgraph,ChordGraph(self.screenplay_main)),
                     (args.sentimentanalysis, SentimentAnalysis(self.screenplay_main)),
                     (args.sentencecomplexity,SentenceComplexity(self.screenplay_main, tree=tree)),
-                    (args.svo,SVO(self.screenplay_main, tree=tree))]
+                    (args.svo,SVO(self.screenplay_main, tree=tree)),
+                    (args.gender,CharacterGender(self.screenplay_main))]
 
                     pipeline = Pipeline(steps)
                     screenplay_data.update(pipeline.run(alleval))

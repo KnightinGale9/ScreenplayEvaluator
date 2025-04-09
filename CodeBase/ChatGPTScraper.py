@@ -58,6 +58,7 @@ class ChatGPTScraper(Scraper):
                       'text': []}
         self.location_list = []
         self.sentences=[]
+        self.character_real_set = set()
         sent_idx = 0
         location = ""
 
@@ -76,7 +77,7 @@ class ChatGPTScraper(Scraper):
                 # print(i, text)
                 self.location_list.append(i)
                 continue
-            trans=r"^\b(?:FADE IN|FADE OUT|DISSOLVE TO|CUT TO|SMASH CUT|IRIS IN AND IRIS OUT|JUMP CUT|FLASHBACK|TIME CUT|THE END.)\b.(.*)"
+            trans=r"^\b(?:FADE IN|FADE OUT|DISSOLVE TO|CUT TO|SMASH CUT|IRIS IN AND IRIS OUT|JUMP CUT|FLASHBACK|TIME CUT|THE END.)\b(.*)"
             if re.match(trans,text):
                 mat = re.match(trans, text)
                 print(text)
@@ -99,6 +100,8 @@ class ChatGPTScraper(Scraper):
                 self.screenplay["sentence_index"].append(sent_idx)
 
             else:
+                self.character_real_set.update(re.findall(r'\b(?:[A-Z\']{2,}(?:\s+[A-Z\']{2,})*)\b', text))
+                self.character_real_set.update(re.findall(r'\b[A-Z]{2,}\b', text))
                 self.screenplay["type"].append("HEADING")
                 self.screenplay["text"].append(text)
                 sent = nltk.sent_tokenize(text)
