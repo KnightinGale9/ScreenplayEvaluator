@@ -27,7 +27,7 @@ from CodeBase.SentenceComplexity import SentenceComplexity
 from CodeBase.ChatGPTScraper import ChatGPTScraper
 from CodeBase.SentimentAnalysis import SentimentAnalysis
 from CodeBase.DirectedGraph import DirectedGraph
-from CodeBase.ChordGraph import ChordGraph
+# from CodeBase.ChordGraph import ChordGraph
 from CodeBase.SVO import SVO
 from CodeBase.StandfordCoreNLPEvaluator import  StandfordCoreNLPEvaluator
 from CodeBase.Pipeline import Pipeline
@@ -143,7 +143,7 @@ class Evaluator:
                     (args.heapslaw,HeapsLaw(self.screenplay_main)),
                     (args.partofspeech,POSCoreNLP(self.screenplay_main,tree=tree)),
                     (args.directedgraph,DirectedGraph(self.screenplay_main)),
-                    (args.chordgraph,ChordGraph(self.screenplay_main)),
+                    # (args.chordgraph,ChordGraph(self.screenplay_main)),
                     (args.sentimentanalysis, SentimentAnalysis(self.screenplay_main)),
                     (args.sentencecomplexity,SentenceComplexity(self.screenplay_main, tree=tree)),
                     (args.svo,SVO(self.screenplay_main, tree=tree)),

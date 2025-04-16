@@ -1,7 +1,8 @@
 # Data processing
 pandas==1.3.3
-numpy==1.21.5
-spacy==3.72
+#numpy==1.21.5
+numpy==1.22.4
+spacy==3.7.2
 nltk==3.7
 json5==0.9.6
 
@@ -18,5 +19,6 @@ torch==2.3.0
 openai==0.28
 pycorenlp== 0.3.0
 # Scientific computing
-scipy==1.15.2
+# scipy==1.15.2
+scipy==1.13.1
 regex==2022.7.9

@@ -58,6 +58,18 @@ class Scraper(object):
             matches = difflib.get_close_matches(char, self.character_real_set, n=1, cutoff=0.9)
             if len(matches) > 0:
                 all_real_characters.add(char)
+            else:
+                for idx, row in self.fulldf.loc[self.fulldf['type'] == char].iterrows():
+                    self.fulldf.loc[idx, "text"] = str(row['type'] + " " + row['text'])
+                    self.fulldf.loc[idx, 'type'] = "HEADING"
+                for idx, row in self.fulldf.iterrows():
+                    if row['type'] == "HEADING":
+                        last_heading = row['text']
+                        continue
+                    matches = re.search(rf'\b{re.escape(row["type"])}\b', row['text'])
+                    if bool(matches):
+                        self.fulldf.loc[idx, "text"] = str(row['type'] + " " + row['text'])
+                        self.fulldf.loc[idx, 'type'] = "HEADING"
 
         sorted_character = list(all_real_characters)
         sorted_character.sort()

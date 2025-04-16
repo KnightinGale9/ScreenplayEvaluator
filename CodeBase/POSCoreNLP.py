@@ -115,7 +115,7 @@ class POSCoreNLP(Evaluator):
                     word = subtree[0].lower()  # Normalize case
                     pos_tag = subtree.label()  # Get POS tag
 
-                    print(word,pos_tag)
+                    # print(word,pos_tag)
                     if pos_tag in self.pos_full:
                         # Update POS count
                         self.pos_count[pos_tag] += 1
