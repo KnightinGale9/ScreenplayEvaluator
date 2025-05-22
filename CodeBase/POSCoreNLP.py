@@ -2,13 +2,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import requests
-import spacy
 from nltk import CoreNLPParser
 
 from CodeBase.Evaluator import Evaluator
 
 # nlp = spacy.load("en_core_web_trf") #slow but more accurate
-nlp = spacy.load("en_core_web_sm") #fast but less accurate
 class POSCoreNLP(Evaluator):
     """
     An evaluator that aggregates the part of speech tags used in the screenplay.

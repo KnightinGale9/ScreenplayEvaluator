@@ -2,7 +2,6 @@ import json
 
 import nltk
 import pandas as pd
-import spacy
 import seaborn as sns
 import colorcet as cc
 import regex as re

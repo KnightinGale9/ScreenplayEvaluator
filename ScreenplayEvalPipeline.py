@@ -108,7 +108,7 @@ class Evaluator:
                 mkdir_path = Path(mkdir)
                 mkdir_path.mkdir(parents=True, exist_ok=True)
             else:
-                mkdir = f"output2/{dir_name}"
+                mkdir = f"journal/{dir_name}"
                 mkdir_path = Path(mkdir)
                 mkdir_path.mkdir(parents=True, exist_ok=True)
             try:
@@ -162,6 +162,12 @@ class Evaluator:
                                                         self.screenplay_main.get_filename())
                         with open(f'{self.screenplay_main.get_output_dir()}/{screenplay_data_file}', "w") as f:
                             json.dump(screenplay_data, f)
+        print(skipped_screenplays)
+        with open("skippedScreenplay.txt", "w") as skip:
+            skip.write(f"Num of Screenplays: {len(skipped_screenplays)}\n")
+            for screen in skipped_screenplays:
+                skip.write(screen)
+                skip.write("\n")
 
 if __name__ == "__main__":
     eval_setup = Evaluator()

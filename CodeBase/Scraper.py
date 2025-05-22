@@ -2,12 +2,12 @@ import difflib
 
 import regex as re
 import pandas as pd
-import spacy
+# import spacy
 import seaborn as sns
 import colorcet as cc
 
 # nlp = spacy.load("en_core_web_trf") #slow but more accurate
-nlp = spacy.load("en_core_web_sm") #fast but less accurate
+# nlp = spacy.load("en_core_web_sm") #fast but less accurate
 
 class Scraper(object):
 
@@ -105,12 +105,12 @@ class Scraper(object):
 
         for idx, row in self.headingdf.iterrows():
             # print(idx,row['text'].upper())
-            nlpset = set()
+            # nlpset = set()
             # nlpset.add()
             # print(row['text'].upper())
-            for token in nlp(row['text'].upper()):
-                nlpset.add(token.lemma_.upper())
-            heading_character.append(characterset.intersection(nlpset).copy())
+            # for token in nlp(row['text'].upper()):
+            #     nlpset.add(token.lemma_.upper())
+            heading_character.append(characterset.copy())
             # if idx == 80:
             #     print(heading_character[-1], nlpset)
         self.headingdf = self.headingdf.assign(characters=heading_character)
